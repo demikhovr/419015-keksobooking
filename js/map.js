@@ -80,11 +80,8 @@ var mapPinTemplate = template.querySelector('.map__pin');
 var mapCardTemplate = template.querySelector('.map__card');
 
 // Параметры элемента map__pin
-var mapPinImageTemplate = mapPinTemplate.querySelector('img');
 var needleHeight = 18; // px
-var mapPinWidth = mapPinImageTemplate.getAttribute('width');
-var mapPinHeight = +mapPinImageTemplate.getAttribute('height') + needleHeight;
-
+var mapPinHeight = (+mapPinTemplate.getAttribute('height') / 2) + needleHeight;
 /**
  * Возвращает случайное число в заданном пределе
  * @param {number} min - минимальное значение в пределе
@@ -188,8 +185,8 @@ var getAds = function () {
  */
 var renderPin = function (ad) {
   var pinElement = mapPinTemplate.cloneNode(true);
-  pinElement.style.left = (ad.location.x - (mapPinWidth / 2)) + 'px';
-  pinElement.style.top = (ad.location.y + mapPinHeight) + 'px';
+  pinElement.style.left = ad.location.x + 'px';
+  pinElement.style.top = (ad.location.y - mapPinHeight) + 'px';
   pinElement.querySelector('img').src = ad.author.avatar;
   return pinElement;
 };
