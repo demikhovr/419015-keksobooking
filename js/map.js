@@ -379,7 +379,7 @@ var insertRenderedCard = function (ad) {
  */
 var onPopupEscPress = function (event) {
   if (event.keyCode === ESC_KEYCODE) {
-    closePopup();
+    closePopup(event);
   }
 };
 
