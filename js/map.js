@@ -1,5 +1,8 @@
 'use strict';
 
+var ESC_KEYCODE = 27;
+var ENTER_KEYCODE = 13;
+
 var TITLES = [
   'Большая уютная квартира',
   'Маленькая неуютная квартира',
@@ -188,8 +191,12 @@ var renderPin = function (ad) {
   pinElement.style.left = ad.location.x + 'px';
   pinElement.style.top = (ad.location.y - mapPinHeight) + 'px';
   pinElement.querySelector('img').src = ad.author.avatar;
+  pinElement.addEventListener('click', function () {
+    pinElementClickHandler(event, ad);
+  });
   return pinElement;
 };
+
 
 /**
  * Создаёт фрагмент с DOM элементами button.map__pin
@@ -286,7 +293,107 @@ var renderMapCard = function (ad) {
 };
 
 var ads = getAds();
-map.classList.remove('map--faded');
-mapPins.appendChild(renderAllPins(ads));
-var adCard = renderMapCard(ads[0]);
-map.insertBefore(adCard, filtersContainer);
+
+// Домашнее задание № 4 Обработка событий
+
+var mainPin = map.querySelector('.map__pin--main');
+var notice = document.querySelector('.notice');
+var noticeForm = notice.querySelector('.notice__form');
+var noticeFieldsets = noticeForm.querySelectorAll('.notice__form fieldset');
+var renderedPins = renderAllPins(ads);
+var adCard = null;
+
+/**
+ * Добавляет/удаляет атрибут disabled
+ * @param {elements} elements
+ * @param {boolean} state
+ */
+var disableElements = function (elements, state) {
+  elements.forEach(function (element) {
+    element.disabled = state;
+  });
+};
+
+/**
+ * Активирует основные функции элементов страницы
+ */
+var activateSite = function () {
+  map.classList.remove('map--faded');
+  mapPins.appendChild(renderedPins);
+  noticeForm.classList.remove('notice__form--disabled');
+  disableElements(noticeFieldsets, false);
+  closePopup(event);
+};
+
+/**
+ * Переключает активную метку на карте и показывает соответствующее ей объявление
+ * @param {object} event
+ * @param {object} ad - объявление
+ */
+var pinElementClickHandler = function (event, ad) {
+  closePopup(event);
+
+  insertRenderedCard(ad);
+
+  event.currentTarget.classList.add('map__pin--active');
+
+  adCard.addEventListener('click', closePopup);
+  document.addEventListener('keydown', onPopupEscPress);
+};
+
+/**
+ * Деактивирует метку на карте и закрывает попап с информацией о ней
+ * @param {event} event
+ */
+var closePopup = function (event) {
+  var activeElement = document.querySelector('.map__pin--active');
+
+  if (activeElement) {
+    activeElement.classList.remove('map__pin--active');
+  }
+
+  if (event.currentTarget === mainPin) {
+    event.currentTarget.classList.add('map__pin--active');
+  }
+
+  if (adCard) {
+    // adCard.classList.add('hidden');
+    map.removeChild(adCard);
+    adCard = null;
+  }
+  document.removeEventListener('keydown', onPopupEscPress);
+};
+
+/**
+ * Вставляет в разметку попап с информацией об объявлении
+ * @param {object} ad - объявление
+ */
+var insertRenderedCard = function (ad) {
+  adCard = renderMapCard(ad);
+  map.insertBefore(adCard, filtersContainer);
+};
+
+/**
+ * Закрывает попап при нажатии ESC
+ * @param {object} event
+ */
+var onPopupEscPress = function (event) {
+  if (event.keyCode === ESC_KEYCODE) {
+    closePopup();
+  }
+};
+
+disableElements(noticeFieldsets, true);
+
+mainPin.addEventListener('mouseup', function () {
+  // mainPin.classList.add('map__pin--active');
+  activateSite();
+});
+
+mainPin.addEventListener('keydown', function (event) {
+  if (event.keyCode === ENTER_KEYCODE) {
+    activateSite();
+  }
+});
+
+
