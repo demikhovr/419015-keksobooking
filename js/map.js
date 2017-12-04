@@ -17,7 +17,8 @@ var TITLES = [
 var TYPES = [
   'flat',
   'house',
-  'bungalo'
+  'bungalo',
+  'palace'
 ];
 
 var CHECKIN_TIMES = [
@@ -179,8 +180,6 @@ var getAds = function () {
   return adsArray;
 };
 
-// Карта на которую будем вставлять похожие метки
-
 /**
  * Создает один DOM элемент button.map__pin на основе шаблона и данных объявления
  * @param {object} ad - объявление
@@ -196,7 +195,6 @@ var renderPin = function (ad) {
   });
   return pinElement;
 };
-
 
 /**
  * Создаёт фрагмент с DOM элементами button.map__pin
@@ -243,6 +241,9 @@ var renderMapCard = function (ad) {
       break;
     case 'house':
       cardElementType.textContent = 'Дом';
+      break;
+    case 'palace':
+      cardElementType.textContent = 'Дворец';
       break;
     default:
       cardElementType.textContent = '';
@@ -395,5 +396,139 @@ mainPin.addEventListener('keydown', function (event) {
     activateSite();
   }
 });
+
+// Домашнее задание № 4.2 Валидация формы
+
+var selectCheckin = noticeForm.querySelector('#timein');
+var selectCheckout = noticeForm.querySelector('#timeout');
+var selectType = noticeForm.querySelector('#type');
+var inputPrice = noticeForm.querySelector('#price');
+var selectRooms = noticeForm.querySelector('#room_number');
+var selectGuests = noticeForm.querySelector('#capacity');
+
+var housingType = {
+  'bungalo': {
+    'name': 'Лачуга',
+    'price': 0
+  },
+  'flat': {
+    'name': 'Квартира',
+    'price': 1000
+  },
+  'house': {
+    'name': 'Дом',
+    'price': 5000
+  },
+  'palace': {
+    'name': 'Дворец',
+    'price': 10000
+  }
+};
+
+/**
+ * Синхронизирует значения двух селектов
+ * @param {node} selectOne
+ * @param {node} selectTwo
+ */
+var synchronizeSelectIndex = function (selectOne, selectTwo) {
+  selectOne.selectedIndex = selectTwo.selectedIndex;
+};
+
+/**
+ * Создаёт опции селекта в соответствии с данными из объекта
+ * @param {node} select
+ * @param {object} selectParams
+ * @return {node}
+ */
+var createOptions = function (select, selectParams) {
+  var selectFragment = document.createDocumentFragment();
+  var options = select.querySelectorAll('option');
+
+  options.forEach(function (item) {
+    select.removeChild(item);
+  });
+
+  for (var key in selectParams) {
+    if (selectParams) {
+      var option = document.createElement('option');
+      option.value = key;
+      option.textContent = selectParams[key].name;
+      selectFragment.appendChild(option);
+    }
+  }
+  select.appendChild(selectFragment);
+  return select;
+};
+
+/**
+ * Синхронизирует значения селекта с минимальным значением инпута
+ * @param {node} input - поле
+ * @param {node} select - селект
+ * @param {object} selectParams - свойства селекта
+ */
+var synchronizeSelectWithInput = function (input, select, selectParams) {
+  inputPrice.min = selectParams[select.value].price;
+};
+
+// selectRooms.addEventListener('change', function () {
+//   switch (selectRooms.value) {
+//     case '1':
+//       selectGuests.value = selectRooms.value;
+//       break;
+//     case '2':
+//       selectGuests.value = selectRooms.value;
+//       break;
+//     case '3':
+//       selectGuests.value = selectRooms.value;
+//       break;
+//     case '100':
+//       selectGuests.value = 0;
+//       break;
+//     default:
+//       selectGuests.value = 1;
+//   }
+// });
+
+/**
+ * Синхронизирует значения двух селектов
+ * @param {node} selectOne
+ * @param {node} selectTwo
+ * @return {string|*}
+ */
+var selectValueSynchronizeHandler = function (selectOne, selectTwo) {
+  selectOne.value = (selectTwo.value === '100') ? '0' : selectTwo.value;
+  return selectOne.value;
+};
+
+/**
+ * Меняет цвет границ невалидных полей
+ * @param {object} event
+ */
+var formInvalidHandler = function (event) {
+  event.target.style.border = '1px solid red';
+};
+
+// Обработчики событий формы
+
+selectCheckin.addEventListener('change', function () {
+  synchronizeSelectIndex(selectCheckout, selectCheckin);
+});
+
+selectCheckout.addEventListener('change', function () {
+  synchronizeSelectIndex(selectCheckin, selectCheckout);
+});
+
+selectType = createOptions(selectType, housingType);
+selectType.addEventListener('change', function () {
+  synchronizeSelectWithInput(inputPrice, selectType, housingType);
+});
+
+selectRooms.addEventListener('change', function () {
+  selectValueSynchronizeHandler(selectGuests, selectRooms);
+});
+
+selectValueSynchronizeHandler(selectGuests, selectRooms);
+
+noticeForm.addEventListener('invalid', formInvalidHandler, true);
 
 
