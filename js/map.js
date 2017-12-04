@@ -469,25 +469,6 @@ var synchronizeSelectWithInput = function (input, select, selectParams) {
   inputPrice.min = selectParams[select.value].price;
 };
 
-// selectRooms.addEventListener('change', function () {
-//   switch (selectRooms.value) {
-//     case '1':
-//       selectGuests.value = selectRooms.value;
-//       break;
-//     case '2':
-//       selectGuests.value = selectRooms.value;
-//       break;
-//     case '3':
-//       selectGuests.value = selectRooms.value;
-//       break;
-//     case '100':
-//       selectGuests.value = 0;
-//       break;
-//     default:
-//       selectGuests.value = 1;
-//   }
-// });
-
 /**
  * Синхронизирует значения двух селектов
  * @param {node} selectOne
@@ -587,7 +568,3 @@ noticeForm.addEventListener('invalid', function () {
   inputPrice.addEventListener('input', priceValidityHandler);
 
 }, true);
-
-noticeForm.addEventListener('valid', function () {
-  noticeForm.removeEventListener('invalid');
-});
