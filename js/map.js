@@ -386,10 +386,7 @@ var onPopupEscPress = function (event) {
 
 disableElements(noticeFieldsets, true);
 
-mainPin.addEventListener('mouseup', function () {
-  // mainPin.classList.add('map__pin--active');
-  activateSite();
-});
+mainPin.addEventListener('mouseup', activateSite);
 
 mainPin.addEventListener('keydown', function (event) {
   if (event.keyCode === ENTER_KEYCODE) {
@@ -405,6 +402,8 @@ var selectType = noticeForm.querySelector('#type');
 var inputPrice = noticeForm.querySelector('#price');
 var selectRooms = noticeForm.querySelector('#room_number');
 var selectGuests = noticeForm.querySelector('#capacity');
+var inputTitle = noticeForm.querySelector('#title');
+var minTitleLength = 30;
 
 var housingType = {
   'bungalo': {
@@ -500,6 +499,53 @@ var selectValueSynchronizeHandler = function (selectOne, selectTwo) {
   return selectOne.value;
 };
 
+// Установка кастомных сообщений
+
+/**
+ * Устанавливает кастомное сообщение об ошибке при вводе недостаточного количества символов (для Edge)
+ * @param {object} event
+ * @param {number} minLength - минимальное кол-во символов
+ */
+var inputMinLengthValidityHandler = function (event, minLength) {
+  if (event.target.value.length < minLength) {
+    event.target.setCustomValidity('Минимальное допустимое количество символов: ' + minLength + '. Введено сейчас : ' + event.target.value.length);
+  } else {
+    event.target.setCustomValidity('');
+  }
+};
+
+/**
+ * Устанавливает кастомные сообщения при некорректном вводе данных в поле 'Заголовок объявления'
+ * @param {object} event
+ */
+var titleValidityHandler = function (event) {
+  if (event.target.validity.tooShort) {
+    event.target.setCustomValidity('Минимальное допустимое количество символов: ' + event.target.minLength + '. Введено сейчас : ' + event.target.value.length);
+  } else if (event.target.validity.tooLong) {
+    event.target.setCustomValidity('Имя не должно превышать ' + event.target.maxLength + ' символов');
+  } else if (event.target.validity.valueMissing) {
+    event.target.setCustomValidity('Поле обязательно для заполнения!');
+  } else {
+    event.target.setCustomValidity('');
+  }
+};
+
+/**
+ * Устанавливает кастомные сообщения при некорректном вводе данных в поле 'Цена за ночь'
+ * @param {object} event
+ */
+var priceValidityHandler = function (event) {
+  if (event.target.validity.rangeUnderflow) {
+    event.target.setCustomValidity('Значение должно быть больше или равно ' + event.target.min + '.');
+  } else if (event.target.validity.rangeOverflow) {
+    event.target.setCustomValidity('Значение должно быть больше или равно ' + event.target.max + '.');
+  } else if (event.target.validity.valueMissing) {
+    event.target.setCustomValidity('Вам необходимо заполнить это поле!');
+  } else {
+    event.target.setCustomValidity('');
+  }
+};
+
 /**
  * Меняет цвет границ невалидных полей
  * @param {object} event
@@ -529,6 +575,19 @@ selectRooms.addEventListener('change', function () {
 
 selectValueSynchronizeHandler(selectGuests, selectRooms);
 
-noticeForm.addEventListener('invalid', formInvalidHandler, true);
+noticeForm.addEventListener('invalid', function () {
+  formInvalidHandler(event);
 
+  inputTitle.addEventListener('input', titleValidityHandler);
 
+  inputTitle.addEventListener('input', function () {
+    inputMinLengthValidityHandler(event, minTitleLength);
+  });
+
+  inputPrice.addEventListener('input', priceValidityHandler);
+
+}, true);
+
+noticeForm.addEventListener('valid', function () {
+  noticeForm.removeEventListener('invalid');
+});
