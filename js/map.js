@@ -1,5 +1,8 @@
 'use strict';
 
+var ESC_KEYCODE = 27;
+var ENTER_KEYCODE = 13;
+
 var TITLES = [
   'Большая уютная квартира',
   'Маленькая неуютная квартира',
@@ -14,7 +17,8 @@ var TITLES = [
 var TYPES = [
   'flat',
   'house',
-  'bungalo'
+  'bungalo',
+  'palace'
 ];
 
 var CHECKIN_TIMES = [
@@ -80,11 +84,8 @@ var mapPinTemplate = template.querySelector('.map__pin');
 var mapCardTemplate = template.querySelector('.map__card');
 
 // Параметры элемента map__pin
-var mapPinImageTemplate = mapPinTemplate.querySelector('img');
 var needleHeight = 18; // px
-var mapPinWidth = mapPinImageTemplate.getAttribute('width');
-var mapPinHeight = +mapPinImageTemplate.getAttribute('height') + needleHeight;
-
+var mapPinHeight = (+mapPinTemplate.getAttribute('height') / 2) + needleHeight;
 /**
  * Возвращает случайное число в заданном пределе
  * @param {number} min - минимальное значение в пределе
@@ -179,8 +180,6 @@ var getAds = function () {
   return adsArray;
 };
 
-// Карта на которую будем вставлять похожие метки
-
 /**
  * Создает один DOM элемент button.map__pin на основе шаблона и данных объявления
  * @param {object} ad - объявление
@@ -188,9 +187,12 @@ var getAds = function () {
  */
 var renderPin = function (ad) {
   var pinElement = mapPinTemplate.cloneNode(true);
-  pinElement.style.left = (ad.location.x - (mapPinWidth / 2)) + 'px';
-  pinElement.style.top = (ad.location.y + mapPinHeight) + 'px';
+  pinElement.style.left = ad.location.x + 'px';
+  pinElement.style.top = (ad.location.y - mapPinHeight) + 'px';
   pinElement.querySelector('img').src = ad.author.avatar;
+  pinElement.addEventListener('click', function () {
+    pinElementClickHandler(event, ad);
+  });
   return pinElement;
 };
 
@@ -239,6 +241,9 @@ var renderMapCard = function (ad) {
       break;
     case 'house':
       cardElementType.textContent = 'Дом';
+      break;
+    case 'palace':
+      cardElementType.textContent = 'Дворец';
       break;
     default:
       cardElementType.textContent = '';
@@ -289,7 +294,300 @@ var renderMapCard = function (ad) {
 };
 
 var ads = getAds();
-map.classList.remove('map--faded');
-mapPins.appendChild(renderAllPins(ads));
-var adCard = renderMapCard(ads[0]);
-map.insertBefore(adCard, filtersContainer);
+
+// Домашнее задание № 4 Обработка событий
+
+var mainPin = map.querySelector('.map__pin--main');
+var notice = document.querySelector('.notice');
+var noticeForm = notice.querySelector('.notice__form');
+var noticeFieldsets = noticeForm.querySelectorAll('.notice__form fieldset');
+var renderedPins = renderAllPins(ads);
+var adCard = null;
+
+/**
+ * Добавляет/удаляет атрибут disabled
+ * @param {elements} elements
+ * @param {boolean} state
+ */
+var disableElements = function (elements, state) {
+  elements.forEach(function (element) {
+    element.disabled = state;
+  });
+};
+
+/**
+ * Активирует основные функции элементов страницы
+ */
+var activateSite = function () {
+  map.classList.remove('map--faded');
+  mapPins.appendChild(renderedPins);
+  noticeForm.classList.remove('notice__form--disabled');
+  disableElements(noticeFieldsets, false);
+  closePopup(event);
+};
+
+/**
+ * Переключает активную метку на карте и показывает соответствующее ей объявление
+ * @param {object} event
+ * @param {object} ad - объявление
+ */
+var pinElementClickHandler = function (event, ad) {
+  closePopup(event);
+
+  insertRenderedCard(ad);
+
+  event.currentTarget.classList.add('map__pin--active');
+
+  adCard.addEventListener('click', closePopup);
+  document.addEventListener('keydown', onPopupEscPress);
+};
+
+/**
+ * Деактивирует метку на карте и закрывает попап с информацией о ней
+ * @param {event} event
+ */
+var closePopup = function (event) {
+  var activeElement = document.querySelector('.map__pin--active');
+
+  if (activeElement) {
+    activeElement.classList.remove('map__pin--active');
+  }
+
+  if (event.currentTarget === mainPin) {
+    event.currentTarget.classList.add('map__pin--active');
+  }
+
+  if (adCard) {
+    // adCard.classList.add('hidden');
+    map.removeChild(adCard);
+    adCard = null;
+  }
+  document.removeEventListener('keydown', onPopupEscPress);
+};
+
+/**
+ * Вставляет в разметку попап с информацией об объявлении
+ * @param {object} ad - объявление
+ */
+var insertRenderedCard = function (ad) {
+  adCard = renderMapCard(ad);
+  map.insertBefore(adCard, filtersContainer);
+};
+
+/**
+ * Закрывает попап при нажатии ESC
+ * @param {object} event
+ */
+var onPopupEscPress = function (event) {
+  if (event.keyCode === ESC_KEYCODE) {
+    closePopup(event);
+  }
+};
+
+disableElements(noticeFieldsets, true);
+
+mainPin.addEventListener('mouseup', activateSite);
+
+mainPin.addEventListener('keydown', function (event) {
+  if (event.keyCode === ENTER_KEYCODE) {
+    activateSite();
+  }
+});
+
+// Домашнее задание № 4.2 Валидация формы
+
+var selectCheckin = noticeForm.querySelector('#timein');
+var selectCheckout = noticeForm.querySelector('#timeout');
+var selectType = noticeForm.querySelector('#type');
+var inputPrice = noticeForm.querySelector('#price');
+var selectRooms = noticeForm.querySelector('#room_number');
+var selectGuests = noticeForm.querySelector('#capacity');
+var inputTitle = noticeForm.querySelector('#title');
+var minTitleLength = 30;
+
+var housingType = {
+  'bungalo': {
+    'name': 'Лачуга',
+    'price': 0
+  },
+  'flat': {
+    'name': 'Квартира',
+    'price': 1000
+  },
+  'house': {
+    'name': 'Дом',
+    'price': 5000
+  },
+  'palace': {
+    'name': 'Дворец',
+    'price': 10000
+  }
+};
+
+/**
+ * Синхронизирует значения двух селектов
+ * @param {node} selectOne
+ * @param {node} selectTwo
+ */
+var synchronizeSelectIndex = function (selectOne, selectTwo) {
+  selectOne.selectedIndex = selectTwo.selectedIndex;
+};
+
+/**
+ * Создаёт опции селекта в соответствии с данными из объекта
+ * @param {node} select
+ * @param {object} selectParams
+ * @return {node}
+ */
+var createOptions = function (select, selectParams) {
+  var selectFragment = document.createDocumentFragment();
+  var options = select.querySelectorAll('option');
+
+  options.forEach(function (item) {
+    select.removeChild(item);
+  });
+
+  for (var key in selectParams) {
+    if (selectParams) {
+      var option = document.createElement('option');
+      option.value = key;
+      option.textContent = selectParams[key].name;
+      selectFragment.appendChild(option);
+    }
+  }
+  select.appendChild(selectFragment);
+  return select;
+};
+
+/**
+ * Синхронизирует значения селекта с минимальным значением инпута
+ * @param {node} input - поле
+ * @param {node} select - селект
+ * @param {object} selectParams - свойства селекта
+ */
+var synchronizeSelectWithInput = function (input, select, selectParams) {
+  inputPrice.min = selectParams[select.value].price;
+};
+
+// selectRooms.addEventListener('change', function () {
+//   switch (selectRooms.value) {
+//     case '1':
+//       selectGuests.value = selectRooms.value;
+//       break;
+//     case '2':
+//       selectGuests.value = selectRooms.value;
+//       break;
+//     case '3':
+//       selectGuests.value = selectRooms.value;
+//       break;
+//     case '100':
+//       selectGuests.value = 0;
+//       break;
+//     default:
+//       selectGuests.value = 1;
+//   }
+// });
+
+/**
+ * Синхронизирует значения двух селектов
+ * @param {node} selectOne
+ * @param {node} selectTwo
+ * @return {string|*}
+ */
+var selectValueSynchronizeHandler = function (selectOne, selectTwo) {
+  selectOne.value = (selectTwo.value === '100') ? '0' : selectTwo.value;
+  return selectOne.value;
+};
+
+// Установка кастомных сообщений
+
+/**
+ * Устанавливает кастомное сообщение об ошибке при вводе недостаточного количества символов (для Edge)
+ * @param {object} event
+ * @param {number} minLength - минимальное кол-во символов
+ */
+var inputMinLengthValidityHandler = function (event, minLength) {
+  if (event.target.value.length < minLength) {
+    event.target.setCustomValidity('Минимальное допустимое количество символов: ' + minLength + '. Введено сейчас : ' + event.target.value.length);
+  } else {
+    event.target.setCustomValidity('');
+  }
+};
+
+/**
+ * Устанавливает кастомные сообщения при некорректном вводе данных в поле 'Заголовок объявления'
+ * @param {object} event
+ */
+var titleValidityHandler = function (event) {
+  if (event.target.validity.tooShort) {
+    event.target.setCustomValidity('Минимальное допустимое количество символов: ' + event.target.minLength + '. Введено сейчас : ' + event.target.value.length);
+  } else if (event.target.validity.tooLong) {
+    event.target.setCustomValidity('Имя не должно превышать ' + event.target.maxLength + ' символов');
+  } else if (event.target.validity.valueMissing) {
+    event.target.setCustomValidity('Поле обязательно для заполнения!');
+  } else {
+    event.target.setCustomValidity('');
+  }
+};
+
+/**
+ * Устанавливает кастомные сообщения при некорректном вводе данных в поле 'Цена за ночь'
+ * @param {object} event
+ */
+var priceValidityHandler = function (event) {
+  if (event.target.validity.rangeUnderflow) {
+    event.target.setCustomValidity('Значение должно быть больше или равно ' + event.target.min + '.');
+  } else if (event.target.validity.rangeOverflow) {
+    event.target.setCustomValidity('Значение должно быть больше или равно ' + event.target.max + '.');
+  } else if (event.target.validity.valueMissing) {
+    event.target.setCustomValidity('Вам необходимо заполнить это поле!');
+  } else {
+    event.target.setCustomValidity('');
+  }
+};
+
+/**
+ * Меняет цвет границ невалидных полей
+ * @param {object} event
+ */
+var formInvalidHandler = function (event) {
+  event.target.style.border = '1px solid red';
+};
+
+// Обработчики событий формы
+
+selectCheckin.addEventListener('change', function () {
+  synchronizeSelectIndex(selectCheckout, selectCheckin);
+});
+
+selectCheckout.addEventListener('change', function () {
+  synchronizeSelectIndex(selectCheckin, selectCheckout);
+});
+
+selectType = createOptions(selectType, housingType);
+selectType.addEventListener('change', function () {
+  synchronizeSelectWithInput(inputPrice, selectType, housingType);
+});
+
+selectRooms.addEventListener('change', function () {
+  selectValueSynchronizeHandler(selectGuests, selectRooms);
+});
+
+selectValueSynchronizeHandler(selectGuests, selectRooms);
+
+noticeForm.addEventListener('invalid', function () {
+  formInvalidHandler(event);
+
+  inputTitle.addEventListener('input', titleValidityHandler);
+
+  inputTitle.addEventListener('input', function () {
+    inputMinLengthValidityHandler(event, minTitleLength);
+  });
+
+  inputPrice.addEventListener('input', priceValidityHandler);
+
+}, true);
+
+noticeForm.addEventListener('valid', function () {
+  noticeForm.removeEventListener('invalid');
+});
