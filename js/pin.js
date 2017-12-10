@@ -2,7 +2,6 @@
 
 (function () {
 
-  var map = document.querySelector('.map');
   // Шаблон из которого будем копировать элементы
   var template = document.querySelector('template').content;
   // Элементы которые будем копировать
