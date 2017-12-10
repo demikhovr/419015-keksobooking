@@ -37,7 +37,13 @@
   var notice = document.querySelector('.notice');
   var noticeForm = notice.querySelector('.notice__form');
   var noticeFieldsets = noticeForm.querySelectorAll('.notice__form fieldset');
+  var inputAddress = notice.querySelector('#address');
   var renderedPins = renderAllPins(ads);
+
+  var mainPinStartCoords = {
+    x: null,
+    y: null
+  };
 
   /**
    * Добавляет/удаляет атрибут disabled
@@ -51,7 +57,7 @@
   };
 
   /**
-   * Обработчик при нажатии клавиши ENTER на главный пин
+   * Обработчик нажатия клавиши ENTER на главный пин
    * @param {object} event
    */
   var mainPinEnterPressHandler = function (event) {
@@ -69,11 +75,80 @@
     window.card.closePopup(event);
   };
 
+  /**
+   * Обработчик опускания кнопки мыши
+   * @param {object} event
+   */
+  var mainPinMouseDownHandler = function (event) {
+    event.preventDefault();
+    activateSite();
+
+    mainPinStartCoords = {
+      x: event.clientX,
+      y: event.clientY
+    };
+
+    document.addEventListener('mousemove', mainPinMoveHandler);
+    document.addEventListener('mouseup', mainPinMouseUpHandler);
+  };
+
+  /**
+   * Обработчик движения мыши
+   * @param {object} moveEvent
+   */
+  var mainPinMoveHandler = function (moveEvent) {
+    moveEvent.preventDefault();
+
+    var shift = {
+      x: mainPinStartCoords.x - moveEvent.clientX,
+      y: mainPinStartCoords.y - moveEvent.clientY
+    };
+
+    mainPinStartCoords = {
+      x: moveEvent.clientX,
+      y: moveEvent.clientY
+    };
+
+    var currentCoords = {
+      x: mainPin.offsetLeft - shift.x,
+      y: mainPin.offsetTop - shift.y
+    };
+
+    if (currentCoords.x < window.data.pinPosition.x.min - window.pin.pinParams.mainPin.offsetX()) {
+      currentCoords.x = window.data.pinPosition.x.min - window.pin.pinParams.mainPin.offsetX();
+    }
+
+    if (currentCoords.x > window.data.pinPosition.x.max - window.pin.pinParams.mainPin.offsetX()) {
+      currentCoords.x = window.data.pinPosition.x.max - window.pin.pinParams.mainPin.offsetX();
+    }
+
+    if (currentCoords.y < window.data.pinPosition.y.min - window.pin.pinParams.mainPin.offsetY()) {
+      currentCoords.y = window.data.pinPosition.y.min - window.pin.pinParams.mainPin.offsetY();
+    }
+
+    if (currentCoords.y > window.data.pinPosition.y.max - window.pin.pinParams.mainPin.offsetY()) {
+      currentCoords.y = window.data.pinPosition.y.max - window.pin.pinParams.mainPin.offsetY();
+    }
+
+    inputAddress.value = 'x: ' + (currentCoords.x + window.pin.pinParams.mainPin.offsetX()) + ', y: ' + (currentCoords.y + window.pin.pinParams.mainPin.offsetY());
+
+    mainPin.style.left = currentCoords.x + 'px';
+    mainPin.style.top = currentCoords.y + 'px';
+  };
+
+  /**
+   * Обработчик отпускания кнопки мыши
+   * @param {object} upEvent
+   */
+  var mainPinMouseUpHandler = function (upEvent) {
+    upEvent.preventDefault();
+    document.removeEventListener('mousemove', mainPinMoveHandler);
+    document.removeEventListener('mouseup', mainPinMouseUpHandler);
+  };
+
+  mainPin.addEventListener('mousedown', mainPinMouseDownHandler);
+
   disableElements(noticeFieldsets, true);
 
-  mainPin.addEventListener('mouseup', activateSite);
-  mainPin.addEventListener('mouseup', activateSite);
-
   mainPin.addEventListener('keydown', mainPinEnterPressHandler);
-
 }());

@@ -128,35 +128,35 @@
   };
 
   /**
-   * Обработчик при изменении состояния селекта checkin
+   * Обработчик изменения состояния селекта checkin
    */
   var checkinChangeHandler = function () {
     synchronizeSelectIndex(selectCheckout, selectCheckin);
   };
 
   /**
-   * Обработчик при изменении состояния селекта checkout
+   * Обработчик изменения состояния селекта checkout
    */
   var checkoutChangeHandler = function () {
     synchronizeSelectIndex(selectCheckin, selectCheckout);
   };
 
   /**
-   * Обработчик при изменении состояния селекта type
+   * Обработчик изменения состояния селекта type
    */
   var typeChangeHandler = function () {
     synchronizeSelectWithInput(inputPrice, selectType, housingType);
   };
 
   /**
-   * Обработчик при изменении состояния селекта rooms
+   * Обработчик изменения состояния селекта rooms
    */
   var roomsChangeHandler = function () {
     selectValueSynchronizeHandler(selectGuests, selectRooms);
   };
 
   /**
-   * Обработчик при отправке формы с невалидным содержимым
+   * Обработчик отправки формы с невалидным содержимым
    * @param {object} event
    */
   var formInvalidHandler = function (event) {
@@ -167,7 +167,7 @@
   };
 
   /**
-   * Обработчик при отправке формы с валидным содержимым
+   * Обработчик отправки формы с валидным содержимым
    */
   var formValidHandler = function () {
     noticeForm.removeEventListener('invalid', formInvalidHandler, true);
