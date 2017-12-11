@@ -57,10 +57,11 @@
     window.card.closePopup(event);
 
     adCard = window.card.insertRenderedCard(ad);
+    var adCloseBtn = adCard.querySelector('.popup__close');
 
     event.currentTarget.classList.add('map__pin--active');
 
-    adCard.addEventListener('click', window.card.closePopup);
+    adCloseBtn.addEventListener('click', window.card.closePopup);
     document.addEventListener('keydown', window.card.onPopupEscPress);
   };
 
