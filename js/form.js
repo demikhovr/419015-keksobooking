@@ -81,11 +81,19 @@
    * Синхронизирует значения двух селектов
    * @param {node} selectOne
    * @param {node} selectTwo
-   * @return {string|*}
    */
   var selectValueSynchronizeHandler = function (selectOne, selectTwo) {
     selectOne.value = (selectTwo.value === '100') ? '0' : selectTwo.value;
-    return selectOne.value;
+
+    var currentValue = selectOne.value;
+
+    for (var i = 0; i < selectOne.options.length; i++) {
+      if (selectOne.value !== '0') {
+        selectOne.options[i].disabled = selectOne.options[i].value > currentValue || selectOne.options[i].value === '0';
+      } else {
+        selectOne.options[i].disabled = selectOne.options[i].value !== currentValue;
+      }
+    }
   };
 
   /**
