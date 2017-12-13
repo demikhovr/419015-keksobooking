@@ -72,6 +72,7 @@
     }
   };
 
+
   window.data = {
     titles: titles,
     types: types,
