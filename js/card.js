@@ -34,9 +34,9 @@
    */
   var getFeatures = function () {
     var featuresArray = window.data.features.slice();
-    var randomIndex = (Math.round(window.util.getRandomNumber(0, window.data.features.length)));
+    var randomIndex = (window.util.getRandomNumber(0, window.data.features.length));
     for (var i = 0; i < randomIndex - 1; i++) {
-      var deletedIndex = Math.round(window.util.getRandomNumber(0, featuresArray.length - 1));
+      var deletedIndex = window.util.getRandomNumber(0, featuresArray.length - 1);
       featuresArray.splice(deletedIndex, 1);
     }
     return featuresArray;
@@ -47,8 +47,8 @@
    * @return {object}
    */
   var generateAd = function () {
-    var locationX = Math.round(window.util.getRandomNumber(window.data.pinPosition.x.min, window.data.pinPosition.x.max));
-    var locationY = Math.round(window.util.getRandomNumber(window.data.pinPosition.y.min, window.data.pinPosition.y.max));
+    var locationX = window.util.getRandomNumber(window.data.pinPosition.x.min, window.data.pinPosition.x.max);
+    var locationY = window.util.getRandomNumber(window.data.pinPosition.y.min, window.data.pinPosition.y.max);
     return {
       'author': {
         'avatar': 'img/avatars/user0' + getAvatarNumber() + '.png'
@@ -56,10 +56,10 @@
       'offer': {
         'title': getTitle(window.data.titles),
         'address': locationX + ', ' + locationY,
-        'price': Math.round(window.util.getRandomNumber(window.data.price.min, window.data.price.max)),
+        'price': window.util.getRandomNumber(window.data.price.min, window.data.price.max),
         'type': window.util.getRandomItem(window.data.types),
-        'rooms': Math.round(window.util.getRandomNumber(window.data.rooms.min, window.data.rooms.max)),
-        'guests': Math.round(window.util.getRandomNumber(window.data.guests.min, window.data.guests.max)),
+        'rooms': window.util.getRandomNumber(window.data.rooms.min, window.data.rooms.max),
+        'guests': window.util.getRandomNumber(window.data.guests.min, window.data.guests.max),
         'checkin': window.util.getRandomItem(window.data.checkinTimes),
         'checkout': window.util.getRandomItem(window.data.checkoutTimes),
         'features': getFeatures(window.data.features),
@@ -114,32 +114,11 @@
         break;
     }
 
-    var endingForRooms = '';
-    var endingForGuests = '';
-
-    switch (ad.offer.rooms) {
-      case 1:
-        endingForRooms = 'комната';
-        break;
-      case 5:
-        endingForRooms = 'комнат';
-        break;
-      default:
-        endingForRooms = 'комнаты';
-        break;
-    }
-
-    switch (ad.offer.guests) {
-      case 1:
-        endingForGuests = 'гостя';
-        break;
-      default:
-        endingForGuests = 'гостей';
-        break;
-    }
+    var endingForRooms = window.util.getWordEnding(ad.offer.rooms, ['комната', 'комнаты', 'комнат']);
+    var endingForGuests = window.util.getWordEnding(ad.offer.guests, ['гостя', 'гостей', 'гостей']);
 
     cardElementRoomsAndGuests.textContent = ad.offer.rooms + ' ' + endingForRooms + ' для ' + ad.offer.guests + ' ' + endingForGuests;
-    cardElementTime.textContent = 'Заезд после ' + ad.offer.checkin + ', выезд до' + ad.offer.checkout;
+    cardElementTime.textContent = 'Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout;
 
     cardElementFeaturesItems.forEach(function (item) {
       cardElementFeatures.removeChild(item);

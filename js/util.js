@@ -36,7 +36,7 @@
    * @return {number}
    */
   var getRandomNumber = function (min, max) {
-    return Math.random() * (max - min) + min;
+    return Math.round(Math.random() * (max - min) + min);
   };
 
   /**
@@ -45,12 +45,24 @@
    * @return {string}
    */
   var getRandomItem = function (array) {
-    return array[Math.round((getRandomNumber(0, array.length - 1)))];
+    return array[(getRandomNumber(0, array.length - 1))];
+  };
+
+  /**
+   *
+   * @param {Number} number - число
+   * @param {array} titles - массив заголовков, среди которых будет выбрана правильная форма
+   * @return {string} string
+   */
+  var getWordEnding = function (number, titles) {
+    var cases = [2, 0, 1, 1, 1, 2];
+    return titles[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
   };
 
   window.util = {
     getRandomNumber: getRandomNumber,
     getRandomItem: getRandomItem,
+    getWordEnding: getWordEnding,
     isEscEvent: isEscEvent,
     isEnterEvent: isEnterEvent,
     keyCodes: keyCodes
