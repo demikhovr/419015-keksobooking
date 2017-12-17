@@ -8,11 +8,11 @@
    * @param {object} customValidityObject
    * */
   var changeDefaultValidity = function (event, customValidityObject) {
-    if ((event.target.value.length < customValidityObject.tooShortCondition) && customValidityObject.tooShortMessage) {
+    if ((0 < event.target.value.length && event.target.value.length < customValidityObject.tooShortCondition) && customValidityObject.tooShortMessage) {
       event.target.setCustomValidity(customValidityObject.tooShortMessage);
-    } else if (event.target.validity.tooLong && customValidityObject.tooShortMessage) {
+    } else if (event.target.validity.tooLong && customValidityObject.tooLongMessage) {
       event.target.setCustomValidity(customValidityObject.tooLongMessage);
-    } else if (event.target.validity.valueMissing && customValidityObject.tooLongMessage) {
+    } else if (event.target.validity.valueMissing && customValidityObject.valueMissingMessage) {
       event.target.setCustomValidity(customValidityObject.valueMissingMessage);
     } else if (event.target.validity.rangeUnderflow && customValidityObject.rangeUnderflowMessage) {
       event.target.setCustomValidity(customValidityObject.rangeUnderflowMessage);

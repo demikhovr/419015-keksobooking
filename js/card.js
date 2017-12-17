@@ -7,6 +7,7 @@
   var template = document.querySelector('template').content;
   // Элементы которые будем копировать
   var mapCardTemplate = template.querySelector('.map__card');
+  var cardElement = mapCardTemplate.cloneNode(true);
   var filtersContainer = document.querySelector('map__filters-container');
   var adCard = null;
 
@@ -57,11 +58,11 @@
         'title': getTitle(window.data.titles),
         'address': locationX + ', ' + locationY,
         'price': window.util.getRandomNumber(window.data.price.min, window.data.price.max),
-        'type': window.util.getRandomItem(window.data.types),
+        'type': window.util.getRandomItem(window.data.TYPES),
         'rooms': window.util.getRandomNumber(window.data.rooms.min, window.data.rooms.max),
         'guests': window.util.getRandomNumber(window.data.guests.min, window.data.guests.max),
-        'checkin': window.util.getRandomItem(window.data.checkinTimes),
-        'checkout': window.util.getRandomItem(window.data.checkoutTimes),
+        'checkin': window.util.getRandomItem(window.data.TIMES),
+        'checkout': window.util.getRandomItem(window.data.TIMES),
         'features': getFeatures(window.data.features),
         'description': '',
         'photos': []
@@ -74,75 +75,12 @@
   };
 
   /**
-   * Создаёт один DOM элемент на основе шаблона и данных из объявления ad
-   * @param {object} ad - объявление
-   * @return {Node}
-   */
-  var renderMapCard = function (ad) {
-    var cardElement = mapCardTemplate.cloneNode(true);
-
-    var cardElementTitle = cardElement.querySelector('h3');
-    var cardElementAddress = cardElement.querySelector('p small');
-    var cardElementPrice = cardElement.querySelector('.popup__price');
-    var cardElementType = cardElement.querySelector('h4');
-    var cardElementRoomsAndGuests = cardElement.querySelector('h4 + p');
-    var cardElementTime = cardElement.querySelector('h4 + p + p');
-    var cardElementFeatures = cardElement.querySelector('.popup__features');
-    var cardElementFeaturesItems = cardElement.querySelectorAll('.feature');
-    var cardElementDescription = cardElement.querySelector('ul + p');
-    var cardElementAvatar = cardElement.querySelector('.popup__avatar');
-
-    cardElementTitle.textContent = ad.offer.title;
-    cardElementAddress.textContent = ad.offer.address;
-    cardElementPrice.textContent = ad.offer.price + '\u20BD/ночь';
-
-    switch (ad.offer.type) {
-      case 'flat':
-        cardElementType.textContent = 'Квартира';
-        break;
-      case 'bungalo':
-        cardElementType.textContent = 'Бунгало';
-        break;
-      case 'house':
-        cardElementType.textContent = 'Дом';
-        break;
-      case 'palace':
-        cardElementType.textContent = 'Дворец';
-        break;
-      default:
-        cardElementType.textContent = '';
-        break;
-    }
-
-    var endingForRooms = window.util.getWordEnding(ad.offer.rooms, ['комната', 'комнаты', 'комнат']);
-    var endingForGuests = window.util.getWordEnding(ad.offer.guests, ['гостя', 'гостей', 'гостей']);
-
-    cardElementRoomsAndGuests.textContent = ad.offer.rooms + ' ' + endingForRooms + ' для ' + ad.offer.guests + ' ' + endingForGuests;
-    cardElementTime.textContent = 'Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout;
-
-    cardElementFeaturesItems.forEach(function (item) {
-      cardElementFeatures.removeChild(item);
-    });
-
-    ad.offer.features.forEach(function (featureItem) {
-      var featuresItem = document.createElement('li');
-      featuresItem.classList.add('feature', 'feature--' + featureItem);
-      cardElementFeatures.appendChild(featuresItem);
-    });
-
-    cardElementDescription.textContent = ad.offer.description;
-    cardElementAvatar.src = ad.author.avatar;
-
-    return cardElement;
-  };
-
-  /**
    * Вставляет в разметку попап с информацией об объявлении
    * @param {object} ad - объявление
    * @return {node}
    */
   var insertRenderedCard = function (ad) {
-    adCard = window.card.renderMapCard(ad);
+    adCard = window.showCard(ad, cardElement);
     map.insertBefore(adCard, filtersContainer);
     return adCard;
   };
@@ -183,7 +121,6 @@
 
   window.card = {
     generateAd: generateAd,
-    renderMapCard: renderMapCard,
     insertRenderedCard: insertRenderedCard,
     closePopup: closePopup,
     onPopupEscPress: onPopupEscPress
