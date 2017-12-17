@@ -14,8 +14,8 @@
 
   /**
    * Синхронизирует значения двух элементов
-   * @param {node} element
-   * @param {node} value
+   * @param {element} element
+   * @param {element} value
    */
   var syncValues = function (element, value) {
     element.value = value;

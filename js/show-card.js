@@ -5,8 +5,8 @@
   /**
    * Создаёт один DOM элемент на основе шаблона и данных из объявления ad
    * @param {object} ad - объявление
-   * @param {Element} templateElement - элемент, куда будем вставлять данные
-   * @return {Node}
+   * @param {element} templateElement - элемент, куда будем вставлять данные
+   * @return {element}
    */
   var showCard = function (ad, templateElement) {
     var cardElementTitle = templateElement.querySelector('h3');

@@ -77,7 +77,7 @@
   /**
    * Вставляет в разметку попап с информацией об объявлении
    * @param {object} ad - объявление
-   * @return {node}
+   * @return {element}
    */
   var insertRenderedCard = function (ad) {
     adCard = window.showCard(ad, cardElement);

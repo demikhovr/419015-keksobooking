@@ -35,7 +35,7 @@
   /**
    * Создает один DOM элемент button.map__pin на основе шаблона и данных объявления
    * @param {object} ad - объявление
-   * @return {Node}
+   * @return {element}
    */
   var renderPin = function (ad) {
     var pinElement = mapPinTemplate.cloneNode(true);
