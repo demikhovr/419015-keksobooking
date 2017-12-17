@@ -37,7 +37,7 @@
    * @param {object} ad - объявление
    * @return {element}
    */
-  var renderPin = function (ad) {
+  var render = function (ad) {
     var pinElement = mapPinTemplate.cloneNode(true);
     pinElement.style.left = ad.location.x + 'px';
     pinElement.style.top = (ad.location.y - pinParams.usersPin.offsetY()) + 'px';
@@ -66,7 +66,7 @@
   };
 
   window.pin = {
-    renderPin: renderPin,
+    render: render,
     pinParams: pinParams
   };
 

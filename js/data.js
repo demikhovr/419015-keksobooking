@@ -35,17 +35,6 @@
     '0'
   ];
 
-  var titles = [
-    'Большая уютная квартира',
-    'Маленькая неуютная квартира',
-    'Огромный прекрасный дворец',
-    'Маленький ужасный дворец',
-    'Красивый гостевой домик',
-    'Некрасивый негостеприимный домик',
-    'Уютное бунгало далеко от моря',
-    'Неуютное бунгало по колено в воде'
-  ];
-
   var minTitleLength = 30;
 
   var getCustomTitleValidityMessage = function (minLength, maxLength) {
@@ -71,35 +60,6 @@
     return validityMessagesObject;
   };
 
-  var features = [
-    'wifi',
-    'dishwasher',
-    'parking',
-    'washer',
-    'elevator',
-    'conditioner'
-  ];
-
-  var adsAmount = {
-    'min': 1,
-    'max': 8
-  };
-
-  var price = {
-    'min': 1000,
-    'max': 1000000
-  };
-
-  var rooms = {
-    'min': 1,
-    'max': 5
-  };
-
-  var guests = {
-    'min': 1,
-    'max': 10
-  };
-
   var pinPosition = {
     'x': {
       'min': 300,
@@ -111,9 +71,7 @@
     }
   };
 
-
   window.data = {
-    titles: titles,
     TIMES: TIMES,
     TYPES: TYPES,
     PRICES: PRICES,
@@ -122,11 +80,6 @@
     minTitleLength: minTitleLength,
     getCustomTitleValidityMessage: getCustomTitleValidityMessage,
     getCustomPriceValidityMessage: getCustomPriceValidityMessage,
-    features: features,
-    adsAmount: adsAmount,
-    price: price,
-    rooms: rooms,
-    guests: guests,
     pinPosition: pinPosition
   };
 }());
