@@ -8,7 +8,7 @@
    * @param {object} customValidityObject
    * */
   var changeDefaultValidity = function (event, customValidityObject) {
-    if ((0 < event.target.value.length && event.target.value.length < customValidityObject.tooShortCondition) && customValidityObject.tooShortMessage) {
+    if ((event.target.value.length !== 0 && event.target.value.length < customValidityObject.tooShortCondition) && customValidityObject.tooShortMessage) {
       event.target.setCustomValidity(customValidityObject.tooShortMessage);
     } else if (event.target.validity.tooLong && customValidityObject.tooLongMessage) {
       event.target.setCustomValidity(customValidityObject.tooLongMessage);
