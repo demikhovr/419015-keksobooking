@@ -61,12 +61,7 @@
    * @param {object} errorMessage
    */
   var errorHandler = function (errorMessage) {
-    var divElement = document.createElement('div');
-    divElement.style = 'z-index: 100; position: fixed; top: 25%; left: 50%; transform: translate(-50%, -50%); width: 300px; height: 200px; text-align: center; background-color: red;';
-    divElement.style.fontSize = '30px';
-
-    divElement.textContent = errorMessage;
-    document.body.insertAdjacentElement('afterbegin', divElement);
+    window.util.createPopup(errorMessage);
   };
 
 

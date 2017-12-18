@@ -3,7 +3,7 @@
 (function () {
 
   var SERVER_URL = 'https://1510.dump.academy/keksobooking';
-  var errors = {
+  var Errors = {
     '400': 'Неверный запрос',
     '401': 'Пользователь не авторизован',
     '403': 'Доступ запрещен',
@@ -25,7 +25,7 @@
       if (xhr.status === 200) {
         onLoad(xhr.response);
       } else {
-        onError(errors[xhr.status]);
+        onError(Errors[xhr.status]);
       }
     });
 

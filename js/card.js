@@ -39,7 +39,6 @@
     }
 
     if (adCard) {
-      // adCard.classList.add('hidden');
       map.removeChild(adCard);
       adCard = null;
     }

@@ -112,14 +112,6 @@
     inputPrice.addEventListener('input', priceValidityHandler);
   };
 
-  /**
-   * Обработчик отправки формы с валидным содержимым
-   */
-  var formValidHandler = function () {
-    noticeForm.removeEventListener('invalid', formInvalidHandler, true);
-  };
-
-
   selectCheckin.addEventListener('change', checkinChangeHandler);
 
   selectCheckout.addEventListener('change', checkoutChangeHandler);
@@ -130,5 +122,32 @@
 
   noticeForm.addEventListener('invalid', formInvalidHandler, true);
 
-  noticeForm.addEventListener('valid', formValidHandler);
+  /**
+   *  Функция обратного вызова, которая срабатывает при успешном выполнении запроса
+   */
+  var successHandler = function () {
+    window.util.createPopup();
+    noticeForm.reset();
+  };
+
+  /**
+   * Функция обратного вызова, которая срабатывает при неуспешном выполнении запроса
+   * @param {string} errorMessage
+   */
+  var errorHandler = function (errorMessage) {
+    window.util.createPopup(errorMessage);
+  };
+
+  /**
+   * Обработчик отправки формы
+   * @param {object} event
+   */
+  var formSubmitHandler = function (event) {
+    event.preventDefault();
+
+    window.backend.save(new FormData(noticeForm), successHandler, errorHandler);
+  };
+
+  noticeForm.addEventListener('submit', formSubmitHandler);
+
 }());
