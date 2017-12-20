@@ -7,43 +7,63 @@
 
   /**
    * Возвращает массив объявлений
-   * @return {Array}
+   * @param {object} data - данные
    * @return {Array}
    */
-  var getAds = function () {
+  var getAds = function (data) {
     var adsArray = [];
-    for (var i = window.data.adsAmount.min; i <= window.data.adsAmount.max; i++) {
-      adsArray.push(window.card.generateAd());
+
+    for (var i = 0; i < data.length; i++) {
+      adsArray.push(data[i]);
     }
+
     return adsArray;
   };
 
   /**
-   * Создаёт фрагмент с DOM элементами button.map__pin
-   * @param {array} adsArray - массив с объявлениями
+   * Создаёт DOM фрагмент с пинами
+   * @param {array} adsArray
    * @return {DocumentFragment}
    */
   var renderAllPins = function (adsArray) {
     var fragment = document.createDocumentFragment();
+
     for (var i = 0; i < adsArray.length; i++) {
-      fragment.appendChild(window.pin.renderPin(adsArray[i]));
+      fragment.appendChild(window.pin.render(adsArray[i]));
     }
+
     return fragment;
   };
-
-  var ads = getAds();
 
   var mainPin = map.querySelector('.map__pin--main');
   var notice = document.querySelector('.notice');
   var noticeForm = notice.querySelector('.notice__form');
   var noticeFieldsets = noticeForm.querySelectorAll('.notice__form fieldset');
   var inputAddress = notice.querySelector('#address');
-  var renderedPins = renderAllPins(ads);
+  var renderedPins = null;
 
   var mainPinStartCoords = {
     x: null,
     y: null
   };
+
+  /**
+   * Функция обратного вызова, которая срабатывает при успешном выполнении запроса
+   * @param {object} data
+   */
+  var successHandler = function (data) {
+    var ads = getAds(data);
+    renderedPins = renderAllPins(ads);
+  };
+
+  /**
+   * функция обратного вызова, которая срабатывает при неуспешном выполнении запроса
+   * @param {object} errorMessage
+   */
+  var errorHandler = function (errorMessage) {
+    window.util.createPopup(errorMessage);
+  };
+
 
   /**
    * Добавляет/удаляет атрибут disabled
@@ -69,7 +89,11 @@
    */
   var activateSite = function () {
     map.classList.remove('map--faded');
-    mapPins.appendChild(renderedPins);
+
+    setTimeout(function () {
+      mapPins.appendChild(renderedPins);
+    }, 100);
+
     noticeForm.classList.remove('notice__form--disabled');
     disableElements(noticeFieldsets, false);
     window.card.closePopup(event);
@@ -145,6 +169,8 @@
     document.removeEventListener('mousemove', mainPinMoveHandler);
     document.removeEventListener('mouseup', mainPinMouseUpHandler);
   };
+
+  window.backend.load(successHandler, errorHandler);
 
   mainPin.addEventListener('mousedown', mainPinMouseDownHandler);
 

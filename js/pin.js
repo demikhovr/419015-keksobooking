@@ -9,23 +9,23 @@
   // Параметры элемента map__pin
   var pinParams = {
     mainPin: {
-      needleHeight: 22,
-      width: 64,
-      height: 64,
+      NEEDLE_HEIGHT: 22,
+      WIDTH: 64,
+      HEIGHT: 64,
       offsetX: function () {
-        return (pinParams.mainPin.width / 2);
+        return (pinParams.mainPin.WIDTH / 2);
       },
       offsetY: function () {
-        return (pinParams.mainPin.height / 2 + pinParams.mainPin.needleHeight);
+        return (pinParams.mainPin.HEIGHT / 2 + pinParams.mainPin.NEEDLE_HEIGHT);
       }
     },
 
     usersPin: {
-      needleHeight: 18,
-      width: 40,
-      height: 40,
+      NEEDLE_HEIGHT: 18,
+      WIDTH: 40,
+      HEIGHT: 40,
       offsetY: function () {
-        return (pinParams.usersPin.height / 2 + pinParams.usersPin.needleHeight);
+        return (pinParams.usersPin.HEIGHT / 2 + pinParams.usersPin.NEEDLE_HEIGHT);
       }
     }
   };
@@ -35,9 +35,9 @@
   /**
    * Создает один DOM элемент button.map__pin на основе шаблона и данных объявления
    * @param {object} ad - объявление
-   * @return {Node}
+   * @return {element}
    */
-  var renderPin = function (ad) {
+  var render = function (ad) {
     var pinElement = mapPinTemplate.cloneNode(true);
     pinElement.style.left = ad.location.x + 'px';
     pinElement.style.top = (ad.location.y - pinParams.usersPin.offsetY()) + 'px';
@@ -66,7 +66,7 @@
   };
 
   window.pin = {
-    renderPin: renderPin,
+    render: render,
     pinParams: pinParams
   };
 

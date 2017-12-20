@@ -2,63 +2,62 @@
 
 (function () {
 
-  var titles = [
-    'Большая уютная квартира',
-    'Маленькая неуютная квартира',
-    'Огромный прекрасный дворец',
-    'Маленький ужасный дворец',
-    'Красивый гостевой домик',
-    'Некрасивый негостеприимный домик',
-    'Уютное бунгало далеко от моря',
-    'Неуютное бунгало по колено в воде'
+  var TIMES = [
+    '12:00',
+    '13:00',
+    '14:00'
   ];
 
-  var types = [
+  var TYPES = [
+    'bungalo',
     'flat',
     'house',
-    'bungalo',
     'palace'
   ];
 
-  var checkinTimes = [
-    '12:00',
-    '13:00',
-    '14:00'
+  var PRICES = [
+    0,
+    1000,
+    5000,
+    10000
   ];
 
-  var checkoutTimes = [
-    '12:00',
-    '13:00',
-    '14:00'
+  var ROOMS = [
+    '1',
+    '2',
+    '3',
+    '100'
+  ];
+  var GUESTS = [
+    '1',
+    '2',
+    '3',
+    '0'
   ];
 
-  var features = [
-    'wifi',
-    'dishwasher',
-    'parking',
-    'washer',
-    'elevator',
-    'conditioner'
-  ];
+  var minTitleLength = 30;
 
-  var adsAmount = {
-    'min': 1,
-    'max': 8
+  var getCustomTitleValidityMessage = function (minLength, maxLength) {
+    var validityMessagesObject = {
+      tooShortCondition: minLength,
+      tooShortMessage: 'Минимальное допустимое количество символов: ' + minLength + '. Введено сейчас : ' + maxLength,
+      tooLongMessage: 'Имя не должно превышать ' + maxLength + ' символов',
+      valueMissingMessage: 'Поле обязательно для заполнения!',
+      defaultMessage: ''
+    };
+
+    return validityMessagesObject;
   };
 
-  var price = {
-    'min': 1000,
-    'max': 1000000
-  };
+  var getCustomPriceValidityMessage = function (minValue, maxValue) {
+    var validityMessagesObject = {
+      rangeUnderflowMessage: 'Значение должно быть больше или равно ' + minValue + '.',
+      rangeOverflowMessage: 'Значение должно быть меньше или равно ' + maxValue + '.',
+      valueMissingMessage: 'Вам необходимо заполнить это поле!',
+      defaultMessage: ''
+    };
 
-  var rooms = {
-    'min': 1,
-    'max': 5
-  };
-
-  var guests = {
-    'min': 1,
-    'max': 10
+    return validityMessagesObject;
   };
 
   var pinPosition = {
@@ -72,17 +71,15 @@
     }
   };
 
-
   window.data = {
-    titles: titles,
-    types: types,
-    checkinTimes: checkinTimes,
-    checkoutTimes: checkoutTimes,
-    features: features,
-    adsAmount: adsAmount,
-    price: price,
-    rooms: rooms,
-    guests: guests,
+    TIMES: TIMES,
+    TYPES: TYPES,
+    PRICES: PRICES,
+    ROOMS: ROOMS,
+    GUESTS: GUESTS,
+    minTitleLength: minTitleLength,
+    getCustomTitleValidityMessage: getCustomTitleValidityMessage,
+    getCustomPriceValidityMessage: getCustomPriceValidityMessage,
     pinPosition: pinPosition
   };
 }());

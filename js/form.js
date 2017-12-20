@@ -11,87 +11,40 @@
   var selectRooms = noticeForm.querySelector('#room_number');
   var selectGuests = noticeForm.querySelector('#capacity');
   var inputTitle = noticeForm.querySelector('#title');
-  var minTitleLength = 30;
-
-  var housingType = {
-    'bungalo': {
-      'name': 'Лачуга',
-      'price': 0
-    },
-    'flat': {
-      'name': 'Квартира',
-      'price': 1000
-    },
-    'house': {
-      'name': 'Дом',
-      'price': 5000
-    },
-    'palace': {
-      'name': 'Дворец',
-      'price': 10000
-    }
-  };
 
   /**
-   * Синхронизирует значения двух селектов
-   * @param {node} selectOne
-   * @param {node} selectTwo
+   * Синхронизирует значения двух элементов
+   * @param {element} element
+   * @param {element} value
    */
-  var synchronizeSelectIndex = function (selectOne, selectTwo) {
-    selectOne.selectedIndex = selectTwo.selectedIndex;
-  };
-
-  /**
-   * Создаёт опции селекта по данным из объекта
-   * @param {node} select
-   * @param {object} selectParams
-   * @return {node}
-   */
-  var createOptions = function (select, selectParams) {
-    var selectFragment = document.createDocumentFragment();
-    var options = select.querySelectorAll('option');
-
-    options.forEach(function (item) {
-      select.removeChild(item);
-    });
-
-    for (var key in selectParams) {
-      if (selectParams) {
-        var option = document.createElement('option');
-        option.value = key;
-        option.textContent = selectParams[key].name;
-        selectFragment.appendChild(option);
-      }
-    }
-    select.appendChild(selectFragment);
-    return select;
+  var syncValues = function (element, value) {
+    element.value = value;
   };
 
   /**
    * Синхронизирует значения селекта с минимальным значением инпута
-   * @param {node} input - поле
-   * @param {node} select - селект
-   * @param {object} selectParams - свойства селекта
+   * @param {element} element
+   * @param {number} value - селект
    */
-  var synchronizeSelectWithInput = function (input, select, selectParams) {
-    inputPrice.min = selectParams[select.value].price;
+  var syncValueWithMin = function (element, value) {
+    element.min = value;
   };
 
   /**
    * Синхронизирует значения двух селектов
-   * @param {node} selectOne
-   * @param {node} selectTwo
+   * @param {Element} element
+   * @param {number} value
    */
-  var selectValueSynchronizeHandler = function (selectOne, selectTwo) {
-    selectOne.value = (selectTwo.value === '100') ? '0' : selectTwo.value;
+  var syncRoomsWithGuests = function (element, value) {
+    syncValues(element, value);
 
-    var currentValue = selectOne.value;
+    var currentValue = selectGuests.value;
 
-    for (var i = 0; i < selectOne.options.length; i++) {
-      if (selectOne.value !== '0') {
-        selectOne.options[i].disabled = selectOne.options[i].value > currentValue || selectOne.options[i].value === '0';
+    for (var i = 0; i < selectGuests.options.length; i++) {
+      if (selectGuests.value !== '0') {
+        selectGuests.options[i].disabled = selectGuests.options[i].value > currentValue || selectGuests.options[i].value === '0';
       } else {
-        selectOne.options[i].disabled = selectOne.options[i].value !== currentValue;
+        selectGuests.options[i].disabled = selectGuests.options[i].value !== currentValue;
       }
     }
   };
@@ -101,15 +54,7 @@
    * @param {object} event
    */
   var titleValidityHandler = function (event) {
-    var customTitleValidity = {
-      tooShortCondition: minTitleLength,
-      tooShortMessage: 'Минимальное допустимое количество символов: ' + minTitleLength + '. Введено сейчас : ' + event.target.value.length,
-      tooLongMessage: 'Имя не должно превышать ' + event.target.maxLength + ' символов',
-      valueMissingMessage: 'Поле обязательно для заполнения!',
-      defaultMessage: ''
-    };
-
-    window.validity(event, customTitleValidity);
+    window.validity(event, window.data.getCustomTitleValidityMessage(window.data.minTitleLength, event.target.value.length));
   };
 
   /**
@@ -117,14 +62,7 @@
    * @param {object} event
    */
   var priceValidityHandler = function (event) {
-    var customPriceValidity = {
-      rangeUnderflowMessage: 'Значение должно быть больше или равно ' + event.target.min + '.',
-      rangeOverflowMessage: 'Значение должно быть меньше или равно ' + event.target.max + '.',
-      valueMissingMessage: 'Вам необходимо заполнить это поле!',
-      defaultMessage: ''
-    };
-
-    window.validity(event, customPriceValidity);
+    window.validity(event, window.data.getCustomPriceValidityMessage(event.target.min, event.target.max));
   };
 
   /**
@@ -139,28 +77,28 @@
    * Обработчик изменения состояния селекта checkin
    */
   var checkinChangeHandler = function () {
-    synchronizeSelectIndex(selectCheckout, selectCheckin);
+    window.synchronizeFields(selectCheckin, selectCheckout, window.data.TIMES, window.data.TIMES, syncValues);
   };
 
   /**
    * Обработчик изменения состояния селекта checkout
    */
   var checkoutChangeHandler = function () {
-    synchronizeSelectIndex(selectCheckin, selectCheckout);
+    window.synchronizeFields(selectCheckout, selectCheckin, window.data.TIMES, window.data.TIMES, syncValues);
   };
 
   /**
    * Обработчик изменения состояния селекта type
    */
   var typeChangeHandler = function () {
-    synchronizeSelectWithInput(inputPrice, selectType, housingType);
+    window.synchronizeFields(selectType, inputPrice, window.data.TYPES, window.data.PRICES, syncValueWithMin);
   };
 
   /**
    * Обработчик изменения состояния селекта rooms
    */
   var roomsChangeHandler = function () {
-    selectValueSynchronizeHandler(selectGuests, selectRooms);
+    window.synchronizeFields(selectRooms, selectGuests, window.data.ROOMS, window.data.GUESTS, syncRoomsWithGuests);
   };
 
   /**
@@ -174,25 +112,42 @@
     inputPrice.addEventListener('input', priceValidityHandler);
   };
 
-  /**
-   * Обработчик отправки формы с валидным содержимым
-   */
-  var formValidHandler = function () {
-    noticeForm.removeEventListener('invalid', formInvalidHandler, true);
-  };
-
-
   selectCheckin.addEventListener('change', checkinChangeHandler);
 
   selectCheckout.addEventListener('change', checkoutChangeHandler);
 
-  selectType = createOptions(selectType, housingType);
   selectType.addEventListener('change', typeChangeHandler);
 
   selectRooms.addEventListener('change', roomsChangeHandler);
 
-  selectValueSynchronizeHandler(selectGuests, selectRooms);
-
   noticeForm.addEventListener('invalid', formInvalidHandler, true);
-  noticeForm.addEventListener('valid', formValidHandler);
+
+  /**
+   *  Функция обратного вызова, которая срабатывает при успешном выполнении запроса
+   */
+  var successHandler = function () {
+    window.util.createPopup();
+    noticeForm.reset();
+  };
+
+  /**
+   * Функция обратного вызова, которая срабатывает при неуспешном выполнении запроса
+   * @param {string} errorMessage
+   */
+  var errorHandler = function (errorMessage) {
+    window.util.createPopup(errorMessage);
+  };
+
+  /**
+   * Обработчик отправки формы
+   * @param {object} event
+   */
+  var formSubmitHandler = function (event) {
+    event.preventDefault();
+
+    window.backend.save(new FormData(noticeForm), successHandler, errorHandler);
+  };
+
+  noticeForm.addEventListener('submit', formSubmitHandler);
+
 }());
