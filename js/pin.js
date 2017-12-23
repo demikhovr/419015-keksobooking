@@ -2,11 +2,8 @@
 
 (function () {
 
-  // Шаблон из которого будем копировать элементы
   var template = document.querySelector('template').content;
-  // Элементы которые будем копировать
   var mapPinTemplate = template.querySelector('.map__pin');
-  // Параметры элемента map__pin
   var pinParams = {
     mainPin: {
       NEEDLE_HEIGHT: 22,
@@ -34,7 +31,7 @@
 
   /**
    * Создает один DOM элемент button.map__pin на основе шаблона и данных объявления
-   * @param {object} ad - объявление
+   * @param {object} ad
    * @return {element}
    */
   var render = function (ad) {
@@ -51,7 +48,7 @@
   /**
    * Переключает активную метку на карте и показывает соответствующее ей объявление
    * @param {object} event
-   * @param {object} ad - объявление
+   * @param {object} ad
    */
   var pinElementClickHandler = function (event, ad) {
     window.card.closePopup(event);

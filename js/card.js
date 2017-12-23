@@ -3,9 +3,7 @@
 (function () {
 
   var map = document.querySelector('.map');
-  // Шаблон из которого будем копировать элементы
   var template = document.querySelector('template').content;
-  // Элементы которые будем копировать
   var mapCardTemplate = template.querySelector('.map__card');
   var cardElement = mapCardTemplate.cloneNode(true);
   var filtersContainer = document.querySelector('map__filters-container');

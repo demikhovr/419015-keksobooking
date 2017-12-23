@@ -54,7 +54,7 @@
    * @param {object} event
    */
   var titleValidityHandler = function (event) {
-    window.validity(event, window.data.getCustomTitleValidityMessage(window.data.minTitleLength, event.target.value.length));
+    window.validity.changeDefaultValidity(event, window.validity.getCustomTitleValidityMessage(window.const.MIN_TITLE_LENGTH, event.target.value.length));
   };
 
   /**
@@ -62,7 +62,7 @@
    * @param {object} event
    */
   var priceValidityHandler = function (event) {
-    window.validity(event, window.data.getCustomPriceValidityMessage(event.target.min, event.target.max));
+    window.validity.changeDefaultValidity(event, window.validity.getCustomPriceValidityMessage(event.target.min, event.target.max));
   };
 
   /**
@@ -74,31 +74,41 @@
   };
 
   /**
+   * Функция инициализирующая форму при открытии сайта
+   */
+  var initializeForm = function () {
+    window.synchronizeFields(selectCheckin, selectCheckout, window.const.TIMES, window.const.TIMES, syncValues);
+    window.synchronizeFields(selectCheckout, selectCheckin, window.const.TIMES, window.const.TIMES, syncValues);
+    window.synchronizeFields(selectType, inputPrice, window.const.TYPES, window.const.PRICES, syncValueWithMin);
+    window.synchronizeFields(selectRooms, selectGuests, window.const.ROOMS, window.const.GUESTS, syncRoomsWithGuests);
+  };
+
+  /**
    * Обработчик изменения состояния селекта checkin
    */
   var checkinChangeHandler = function () {
-    window.synchronizeFields(selectCheckin, selectCheckout, window.data.TIMES, window.data.TIMES, syncValues);
+    window.synchronizeFields(selectCheckin, selectCheckout, window.const.TIMES, window.const.TIMES, syncValues);
   };
 
   /**
    * Обработчик изменения состояния селекта checkout
    */
   var checkoutChangeHandler = function () {
-    window.synchronizeFields(selectCheckout, selectCheckin, window.data.TIMES, window.data.TIMES, syncValues);
+    window.synchronizeFields(selectCheckout, selectCheckin, window.const.TIMES, window.const.TIMES, syncValues);
   };
 
   /**
    * Обработчик изменения состояния селекта type
    */
   var typeChangeHandler = function () {
-    window.synchronizeFields(selectType, inputPrice, window.data.TYPES, window.data.PRICES, syncValueWithMin);
+    window.synchronizeFields(selectType, inputPrice, window.const.TYPES, window.const.PRICES, syncValueWithMin);
   };
 
   /**
    * Обработчик изменения состояния селекта rooms
    */
   var roomsChangeHandler = function () {
-    window.synchronizeFields(selectRooms, selectGuests, window.data.ROOMS, window.data.GUESTS, syncRoomsWithGuests);
+    window.synchronizeFields(selectRooms, selectGuests, window.const.ROOMS, window.const.GUESTS, syncRoomsWithGuests);
   };
 
   /**
@@ -112,22 +122,13 @@
     inputPrice.addEventListener('input', priceValidityHandler);
   };
 
-  selectCheckin.addEventListener('change', checkinChangeHandler);
-
-  selectCheckout.addEventListener('change', checkoutChangeHandler);
-
-  selectType.addEventListener('change', typeChangeHandler);
-
-  selectRooms.addEventListener('change', roomsChangeHandler);
-
-  noticeForm.addEventListener('invalid', formInvalidHandler, true);
-
   /**
    *  Функция обратного вызова, которая срабатывает при успешном выполнении запроса
    */
   var successHandler = function () {
     window.util.createPopup();
     noticeForm.reset();
+    initializeForm();
   };
 
   /**
@@ -148,6 +149,18 @@
     window.backend.save(new FormData(noticeForm), successHandler, errorHandler);
   };
 
+  selectCheckin.addEventListener('change', checkinChangeHandler);
+
+  selectCheckout.addEventListener('change', checkoutChangeHandler);
+
+  selectType.addEventListener('change', typeChangeHandler);
+
+  selectRooms.addEventListener('change', roomsChangeHandler);
+
+  noticeForm.addEventListener('invalid', formInvalidHandler, true);
+
   noticeForm.addEventListener('submit', formSubmitHandler);
+
+  initializeForm();
 
 }());

@@ -23,5 +23,45 @@
     }
   };
 
-  window.validity = changeDefaultValidity;
+  /**
+   * Возвращает объект с набором кастомных сообщений и параметров для поля title
+   * @param {number} minLength
+   * @param {number} maxLength
+   * @return {object} validityMessagesObject
+   */
+  var getCustomTitleValidityMessage = function (minLength, maxLength) {
+    var validityMessagesObject = {
+      tooShortCondition: minLength,
+      tooShortMessage: 'Минимальное допустимое количество символов: ' + minLength + '. Введено сейчас : ' + maxLength,
+      tooLongMessage: 'Имя не должно превышать ' + maxLength + ' символов',
+      valueMissingMessage: 'Поле обязательно для заполнения!',
+      defaultMessage: ''
+    };
+
+    return validityMessagesObject;
+  };
+
+  /**
+   * Возвращает объект с набором кастомных сообщений и параметров для поля price
+   * @param {number} minValue
+   * @param {number} maxValue
+   * @return {object} validityMessagesObject
+   */
+  var getCustomPriceValidityMessage = function (minValue, maxValue) {
+    var validityMessagesObject = {
+      rangeUnderflowMessage: 'Значение должно быть больше или равно ' + minValue + '.',
+      rangeOverflowMessage: 'Значение должно быть меньше или равно ' + maxValue + '.',
+      valueMissingMessage: 'Вам необходимо заполнить это поле!',
+      defaultMessage: ''
+    };
+
+    return validityMessagesObject;
+  };
+
+  window.validity = {
+    changeDefaultValidity: changeDefaultValidity,
+    getCustomTitleValidityMessage: getCustomTitleValidityMessage,
+    getCustomPriceValidityMessage: getCustomPriceValidityMessage
+  };
+
 }());

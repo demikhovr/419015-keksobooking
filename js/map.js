@@ -64,14 +64,13 @@
     window.util.createPopup(errorMessage);
   };
 
-
   /**
    * Добавляет/удаляет атрибут disabled
    * @param {elements} elements
    * @param {boolean} state
    */
   var disableElements = function (elements, state) {
-    elements.forEach(function (element) {
+    Array.from(elements).forEach(function (element) {
       element.disabled = state;
     });
   };
@@ -90,9 +89,9 @@
   var activateSite = function () {
     map.classList.remove('map--faded');
 
-    setTimeout(function () {
+    if (renderedPins) {
       mapPins.appendChild(renderedPins);
-    }, 100);
+    }
 
     noticeForm.classList.remove('notice__form--disabled');
     disableElements(noticeFieldsets, false);
@@ -138,20 +137,20 @@
       y: mainPin.offsetTop - shift.y
     };
 
-    if (currentCoords.x < window.data.pinPosition.x.min - window.pin.pinParams.mainPin.offsetX()) {
-      currentCoords.x = window.data.pinPosition.x.min - window.pin.pinParams.mainPin.offsetX();
+    if (currentCoords.x < window.const.pinPosition.X_MIN - window.pin.pinParams.mainPin.offsetX()) {
+      currentCoords.x = window.const.pinPosition.X_MIN - window.pin.pinParams.mainPin.offsetX();
     }
 
-    if (currentCoords.x > window.data.pinPosition.x.max - window.pin.pinParams.mainPin.offsetX()) {
-      currentCoords.x = window.data.pinPosition.x.max - window.pin.pinParams.mainPin.offsetX();
+    if (currentCoords.x > window.const.pinPosition.X_MAX - window.pin.pinParams.mainPin.offsetX()) {
+      currentCoords.x = window.const.pinPosition.X_MAX - window.pin.pinParams.mainPin.offsetX();
     }
 
-    if (currentCoords.y < window.data.pinPosition.y.min - window.pin.pinParams.mainPin.offsetY()) {
-      currentCoords.y = window.data.pinPosition.y.min - window.pin.pinParams.mainPin.offsetY();
+    if (currentCoords.y < window.const.pinPosition.Y_MIN - window.pin.pinParams.mainPin.offsetY()) {
+      currentCoords.y = window.const.pinPosition.Y_MIN - window.pin.pinParams.mainPin.offsetY();
     }
 
-    if (currentCoords.y > window.data.pinPosition.y.max - window.pin.pinParams.mainPin.offsetY()) {
-      currentCoords.y = window.data.pinPosition.y.max - window.pin.pinParams.mainPin.offsetY();
+    if (currentCoords.y > window.const.pinPosition.Y_MAX - window.pin.pinParams.mainPin.offsetY()) {
+      currentCoords.y = window.const.pinPosition.Y_MAX - window.pin.pinParams.mainPin.offsetY();
     }
 
     inputAddress.value = 'x: ' + (currentCoords.x + window.pin.pinParams.mainPin.offsetX()) + ', y: ' + (currentCoords.y + window.pin.pinParams.mainPin.offsetY());

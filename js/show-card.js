@@ -2,6 +2,13 @@
 
 (function () {
 
+  var Types = {
+    flat: 'Квартира',
+    bungalo: 'Бунгало',
+    house: 'Дом',
+    palace: 'Дворец'
+  };
+
   /**
    * Создаёт один DOM элемент на основе шаблона и данных из объявления ad
    * @param {object} ad - объявление
@@ -22,25 +29,9 @@
 
     cardElementTitle.textContent = ad.offer.title;
     cardElementAddress.textContent = ad.offer.address;
-    cardElementPrice.textContent = ad.offer.price + '\u20BD/ночь';
+    cardElementPrice.textContent = ad.offer.price + ' \u20BD/ночь';
 
-    switch (ad.offer.type) {
-      case 'flat':
-        cardElementType.textContent = 'Квартира';
-        break;
-      case 'bungalo':
-        cardElementType.textContent = 'Бунгало';
-        break;
-      case 'house':
-        cardElementType.textContent = 'Дом';
-        break;
-      case 'palace':
-        cardElementType.textContent = 'Дворец';
-        break;
-      default:
-        cardElementType.textContent = '';
-        break;
-    }
+    cardElementType.textContent = Types[ad.offer.type];
 
     var endingForRooms = window.util.getWordEnding(ad.offer.rooms, ['комната', 'комнаты', 'комнат']);
     var endingForGuests = window.util.getWordEnding(ad.offer.guests, ['гостя', 'гостей', 'гостей']);
@@ -48,7 +39,7 @@
     cardElementRoomsAndGuests.textContent = ad.offer.rooms + ' ' + endingForRooms + ' для ' + ad.offer.guests + ' ' + endingForGuests;
     cardElementTime.textContent = 'Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout;
 
-    cardElementFeaturesItems.forEach(function (item) {
+    Array.from(cardElementFeaturesItems).forEach(function (item) {
       cardElementFeatures.removeChild(item);
     });
 
