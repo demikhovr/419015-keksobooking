@@ -40,13 +40,13 @@
 
     var currentValue = selectGuests.value;
 
-    for (var i = 0; i < selectGuests.options.length; i++) {
-      if (selectGuests.value !== '0') {
-        selectGuests.options[i].disabled = selectGuests.options[i].value > currentValue || selectGuests.options[i].value === '0';
+    Array.from(selectGuests.options).forEach(function (item) {
+      if (item.value !== '0') {
+        item.disabled = item.value > currentValue || item.value === '0';
       } else {
-        selectGuests.options[i].disabled = selectGuests.options[i].value !== currentValue;
+        item.disabled = item.value !== currentValue;
       }
-    }
+    });
   };
 
   /**

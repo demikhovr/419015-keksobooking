@@ -13,9 +13,9 @@
   var getAds = function (data) {
     var adsArray = [];
 
-    for (var i = 0; i < data.length; i++) {
-      adsArray.push(data[i]);
-    }
+    data.forEach(function (item) {
+      adsArray.push(item);
+    });
 
     return adsArray;
   };
@@ -28,9 +28,9 @@
   var renderAllPins = function (adsArray) {
     var fragment = document.createDocumentFragment();
 
-    for (var i = 0; i < adsArray.length; i++) {
-      fragment.appendChild(window.pin.render(adsArray[i]));
-    }
+    adsArray.forEach(function (item) {
+      fragment.appendChild(window.pin.render(item));
+    });
 
     return fragment;
   };
