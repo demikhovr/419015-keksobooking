@@ -36,7 +36,7 @@
     event.currentTarget.classList.add('map__pin--active');
 
     adCloseBtn.addEventListener('click', window.card.closePopup);
-    document.addEventListener('keydown', window.card.onPopupEscPress);
+    document.addEventListener('keydown', window.card.popupEscPressHandler);
   };
 
   window.pin = {

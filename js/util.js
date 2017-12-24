@@ -93,21 +93,21 @@
         popup.remove();
       }
 
-      document.removeEventListener('keydown', onFormPopupEscPress);
+      document.removeEventListener('keydown', formPopupEscPressHandler);
     };
 
     /**
      * Закрывает попап при нажатии ESC
      * @param {object} event
      */
-    var onFormPopupEscPress = function (event) {
+    var formPopupEscPressHandler = function (event) {
       window.util.isEscEvent(event, function () {
         closeFormPopup(event);
       });
     };
 
     btnClose.addEventListener('click', closeFormPopup);
-    document.addEventListener('keydown', onFormPopupEscPress);
+    document.addEventListener('keydown', formPopupEscPressHandler);
 
     document.body.insertAdjacentElement('afterbegin', popup);
   };

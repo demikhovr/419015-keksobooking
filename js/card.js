@@ -86,14 +86,14 @@
       map.removeChild(adCard);
       adCard = null;
     }
-    document.removeEventListener('keydown', onPopupEscPress);
+    document.removeEventListener('keydown', popupEscPressHandler);
   };
 
   /**
    * Закрывает попап при нажатии ESC
    * @param {object} event
    */
-  var onPopupEscPress = function (event) {
+  var popupEscPressHandler = function (event) {
     window.util.isEscEvent(event, function () {
       closePopup();
     });
@@ -102,7 +102,7 @@
   window.card = {
     insertRenderedCard: insertRenderedCard,
     closePopup: closePopup,
-    onPopupEscPress: onPopupEscPress
+    popupEscPressHandler: popupEscPressHandler
   };
 
 }());
