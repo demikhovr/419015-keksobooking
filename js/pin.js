@@ -4,29 +4,6 @@
 
   var template = document.querySelector('template').content;
   var mapPinTemplate = template.querySelector('.map__pin');
-  var pinParams = {
-    mainPin: {
-      NEEDLE_HEIGHT: 22,
-      WIDTH: 64,
-      HEIGHT: 64,
-      offsetX: function () {
-        return (pinParams.mainPin.WIDTH / 2);
-      },
-      offsetY: function () {
-        return (pinParams.mainPin.HEIGHT / 2 + pinParams.mainPin.NEEDLE_HEIGHT);
-      }
-    },
-
-    usersPin: {
-      NEEDLE_HEIGHT: 18,
-      WIDTH: 40,
-      HEIGHT: 40,
-      offsetY: function () {
-        return (pinParams.usersPin.HEIGHT / 2 + pinParams.usersPin.NEEDLE_HEIGHT);
-      }
-    }
-  };
-
   var adCard = null;
 
   /**
@@ -37,7 +14,7 @@
   var render = function (ad) {
     var pinElement = mapPinTemplate.cloneNode(true);
     pinElement.style.left = ad.location.x + 'px';
-    pinElement.style.top = (ad.location.y - pinParams.usersPin.offsetY()) + 'px';
+    pinElement.style.top = (ad.location.y - window.const.userPinParams.offsetY()) + 'px';
     pinElement.querySelector('img').src = ad.author.avatar;
     pinElement.addEventListener('click', function (event) {
       pinElementClickHandler(event, ad);
@@ -63,8 +40,7 @@
   };
 
   window.pin = {
-    render: render,
-    pinParams: pinParams
+    render: render
   };
 
 }());
