@@ -184,7 +184,7 @@
 
   /**
    * Фильтрует массив объектов по значению
-   * @param {object} array
+   * @param {array} array
    * @param {element} element
    * @param {object.type} type
    * @return {array}
@@ -197,7 +197,7 @@
 
   /**
    * Фильтрует массив объектов по цене
-   * @param {object} array
+   * @param {array} array
    * @param {element} element
    * @param {object.type} type
    * @return {array}
@@ -224,7 +224,7 @@
 
   /**
    * Фильтрует массив объектов по особенностям
-   * @param {object} array
+   * @param {array} array
    * @param {element} elements
    * @param {object.type} type
    * @return {array}

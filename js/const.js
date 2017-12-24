@@ -72,6 +72,8 @@
   var LOW_PRICE = 10000;
   var MIDDLE_PRICE = 50000;
 
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png', 'webp'];
+
   window.const = {
     DEBOUNCE_INTERVAL: DEBOUNCE_INTERVAL,
     TIMES: TIMES,
@@ -85,7 +87,8 @@
     userPinParams: userPinParams,
     ADS_AMOUNT: ADS_AMOUNT,
     LOW_PRICE: LOW_PRICE,
-    MIDDLE_PRICE: MIDDLE_PRICE
+    MIDDLE_PRICE: MIDDLE_PRICE,
+    FILE_TYPES: FILE_TYPES
   };
 
 }());
