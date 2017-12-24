@@ -11,6 +11,9 @@
   var selectRooms = noticeForm.querySelector('#room_number');
   var selectGuests = noticeForm.querySelector('#capacity');
   var inputTitle = noticeForm.querySelector('#title');
+  var avatarPreview = document.querySelector('.notice__preview img');
+  var avatarDefaultSrc = avatarPreview.src;
+  var housingPhotosPreview = document.querySelector('.form__photo-container');
 
   /**
    * Синхронизирует значения двух элементов
@@ -40,13 +43,23 @@
 
     var currentValue = selectGuests.value;
 
-    for (var i = 0; i < selectGuests.options.length; i++) {
-      if (selectGuests.value !== '0') {
-        selectGuests.options[i].disabled = selectGuests.options[i].value > currentValue || selectGuests.options[i].value === '0';
+    Array.from(selectGuests.options).forEach(function (item) {
+      if (item.value !== '0') {
+        item.disabled = item.value > currentValue || item.value === '0';
       } else {
-        selectGuests.options[i].disabled = selectGuests.options[i].value !== currentValue;
+        item.disabled = item.value !== currentValue;
       }
-    }
+    });
+  };
+
+  /**
+   * Функция инициализирующая форму при открытии сайта
+   */
+  var initializeForm = function () {
+    window.synchronizeFields(selectCheckin, selectCheckout, window.const.TIMES, window.const.TIMES, syncValues);
+    window.synchronizeFields(selectCheckout, selectCheckin, window.const.TIMES, window.const.TIMES, syncValues);
+    window.synchronizeFields(selectType, inputPrice, window.const.TYPES, window.const.PRICES, syncValueWithMin);
+    window.synchronizeFields(selectRooms, selectGuests, window.const.ROOMS, window.const.GUESTS, syncRoomsWithGuests);
   };
 
   /**
@@ -54,7 +67,11 @@
    * @param {object} event
    */
   var titleValidityHandler = function (event) {
-    window.validity(event, window.data.getCustomTitleValidityMessage(window.data.minTitleLength, event.target.value.length));
+    window.validity.changeDefaultValidity(event, window.validity.getCustomTitleValidityMessage(window.const.MIN_TITLE_LENGTH, event.target.value.length));
+
+    if (event.target.validity.valid) {
+      event.target.style.border = '';
+    }
   };
 
   /**
@@ -62,43 +79,39 @@
    * @param {object} event
    */
   var priceValidityHandler = function (event) {
-    window.validity(event, window.data.getCustomPriceValidityMessage(event.target.min, event.target.max));
-  };
+    window.validity.changeDefaultValidity(event, window.validity.getCustomPriceValidityMessage(event.target.min, event.target.max));
 
-  /**
-   * Меняет цвет границ невалидных полей
-   * @param {object} event
-   */
-  var fieldsInvalidHandler = function (event) {
-    event.target.style.border = '1px solid red';
+    if (event.target.validity.valid) {
+      event.target.style.border = '';
+    }
   };
 
   /**
    * Обработчик изменения состояния селекта checkin
    */
   var checkinChangeHandler = function () {
-    window.synchronizeFields(selectCheckin, selectCheckout, window.data.TIMES, window.data.TIMES, syncValues);
+    window.synchronizeFields(selectCheckin, selectCheckout, window.const.TIMES, window.const.TIMES, syncValues);
   };
 
   /**
    * Обработчик изменения состояния селекта checkout
    */
   var checkoutChangeHandler = function () {
-    window.synchronizeFields(selectCheckout, selectCheckin, window.data.TIMES, window.data.TIMES, syncValues);
+    window.synchronizeFields(selectCheckout, selectCheckin, window.const.TIMES, window.const.TIMES, syncValues);
   };
 
   /**
    * Обработчик изменения состояния селекта type
    */
   var typeChangeHandler = function () {
-    window.synchronizeFields(selectType, inputPrice, window.data.TYPES, window.data.PRICES, syncValueWithMin);
+    window.synchronizeFields(selectType, inputPrice, window.const.TYPES, window.const.PRICES, syncValueWithMin);
   };
 
   /**
    * Обработчик изменения состояния селекта rooms
    */
   var roomsChangeHandler = function () {
-    window.synchronizeFields(selectRooms, selectGuests, window.data.ROOMS, window.data.GUESTS, syncRoomsWithGuests);
+    window.synchronizeFields(selectRooms, selectGuests, window.const.ROOMS, window.const.GUESTS, syncRoomsWithGuests);
   };
 
   /**
@@ -106,21 +119,20 @@
    * @param {object} event
    */
   var formInvalidHandler = function (event) {
-    fieldsInvalidHandler(event);
-
-    inputTitle.addEventListener('input', titleValidityHandler);
-    inputPrice.addEventListener('input', priceValidityHandler);
+    event.target.style.border = '1px solid red';
   };
 
-  selectCheckin.addEventListener('change', checkinChangeHandler);
+  /**
+   * Удаляет загруженные изображения
+   */
+  var removeUploadedImages = function () {
+    avatarPreview.src = avatarDefaultSrc;
 
-  selectCheckout.addEventListener('change', checkoutChangeHandler);
-
-  selectType.addEventListener('change', typeChangeHandler);
-
-  selectRooms.addEventListener('change', roomsChangeHandler);
-
-  noticeForm.addEventListener('invalid', formInvalidHandler, true);
+    var housingPhotos = housingPhotosPreview.querySelectorAll('.form__photo-container img');
+    Array.from(housingPhotos).forEach(function (item) {
+      housingPhotosPreview.removeChild(item);
+    });
+  };
 
   /**
    *  Функция обратного вызова, которая срабатывает при успешном выполнении запроса
@@ -128,6 +140,11 @@
   var successHandler = function () {
     window.util.createPopup();
     noticeForm.reset();
+    inputTitle.removeEventListener('input', titleValidityHandler);
+    inputPrice.removeEventListener('input', priceValidityHandler);
+    removeUploadedImages();
+    initializeForm();
+    window.map.setDefaultAddress();
   };
 
   /**
@@ -148,6 +165,15 @@
     window.backend.save(new FormData(noticeForm), successHandler, errorHandler);
   };
 
+  inputTitle.addEventListener('input', titleValidityHandler);
+  inputPrice.addEventListener('input', priceValidityHandler);
+  selectCheckin.addEventListener('change', checkinChangeHandler);
+  selectCheckout.addEventListener('change', checkoutChangeHandler);
+  selectType.addEventListener('change', typeChangeHandler);
+  selectRooms.addEventListener('change', roomsChangeHandler);
+  noticeForm.addEventListener('invalid', formInvalidHandler, true);
   noticeForm.addEventListener('submit', formSubmitHandler);
+
+  initializeForm();
 
 }());
