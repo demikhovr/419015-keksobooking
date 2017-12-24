@@ -74,7 +74,6 @@
 
   /**
    * Деактивирует метку на карте и закрывает попап с информацией о ней
-   * @param {event} event
    */
   var closePopup = function () {
     var activeElement = document.querySelector('.map__pin--active');

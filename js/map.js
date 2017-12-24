@@ -21,7 +21,20 @@
   var roomsFilter = filtersForm.querySelector('#housing-rooms');
   var guestsFilter = filtersForm.querySelector('#housing-guests');
   var featuresFilter = filtersForm.querySelector('#housing-features');
-  var activeFeatureItems;
+
+
+  /**
+   * Устанавливает адрес по умолчанию
+   */
+  var setDefaultAddress = function () {
+    if (mainPin) {
+      var x = mainPin.offsetLeft;
+      var y = mainPin.offsetTop + window.const.mainPinParams.offsetY();
+      inputAddress.value = 'x: ' + x + ', y: ' + y;
+    }
+  };
+
+  setDefaultAddress();
 
   /**
    * Возвращает массив объявлений
@@ -260,7 +273,7 @@
     newAdsArray = filterArrayByValue(newAdsArray, typeFilter, 'type');
     newAdsArray = filterArrayByValue(newAdsArray, guestsFilter, 'guests');
     newAdsArray = filterArrayByPrice(newAdsArray, priceFilter, 'price');
-    activeFeatureItems = Array.from(featuresFilter.querySelectorAll('input[type=checkbox]:checked'));
+    var activeFeatureItems = Array.from(featuresFilter.querySelectorAll('input[type=checkbox]:checked'));
     newAdsArray = filterArrayByFeatures(newAdsArray, activeFeatureItems, 'features');
 
     renderPins(newAdsArray);

@@ -11,6 +11,10 @@
   var selectRooms = noticeForm.querySelector('#room_number');
   var selectGuests = noticeForm.querySelector('#capacity');
   var inputTitle = noticeForm.querySelector('#title');
+  var avatarPreview = document.querySelector('.notice__preview img');
+  var avatarDefaultSrc = avatarPreview.src;
+  var housingPhotosPreview = document.querySelector('.form__photo-container');
+
 
   /**
    * Синхронизирует значения двух элементов
@@ -50,11 +54,25 @@
   };
 
   /**
+   * Функция инициализирующая форму при открытии сайта
+   */
+  var initializeForm = function () {
+    window.synchronizeFields(selectCheckin, selectCheckout, window.const.TIMES, window.const.TIMES, syncValues);
+    window.synchronizeFields(selectCheckout, selectCheckin, window.const.TIMES, window.const.TIMES, syncValues);
+    window.synchronizeFields(selectType, inputPrice, window.const.TYPES, window.const.PRICES, syncValueWithMin);
+    window.synchronizeFields(selectRooms, selectGuests, window.const.ROOMS, window.const.GUESTS, syncRoomsWithGuests);
+  };
+
+  /**
    * Устанавливает кастомные сообщения при некорректном вводе данных в поле 'Заголовок объявления'
    * @param {object} event
    */
   var titleValidityHandler = function (event) {
     window.validity.changeDefaultValidity(event, window.validity.getCustomTitleValidityMessage(window.const.MIN_TITLE_LENGTH, event.target.value.length));
+
+    if (event.target.validity.valid) {
+      event.target.style.border = '';
+    }
   };
 
   /**
@@ -63,24 +81,10 @@
    */
   var priceValidityHandler = function (event) {
     window.validity.changeDefaultValidity(event, window.validity.getCustomPriceValidityMessage(event.target.min, event.target.max));
-  };
 
-  /**
-   * Меняет цвет границ невалидных полей
-   * @param {object} event
-   */
-  var fieldsInvalidHandler = function (event) {
-    event.target.style.border = '1px solid red';
-  };
-
-  /**
-   * Функция инициализирующая форму при открытии сайта
-   */
-  var initializeForm = function () {
-    window.synchronizeFields(selectCheckin, selectCheckout, window.const.TIMES, window.const.TIMES, syncValues);
-    window.synchronizeFields(selectCheckout, selectCheckin, window.const.TIMES, window.const.TIMES, syncValues);
-    window.synchronizeFields(selectType, inputPrice, window.const.TYPES, window.const.PRICES, syncValueWithMin);
-    window.synchronizeFields(selectRooms, selectGuests, window.const.ROOMS, window.const.GUESTS, syncRoomsWithGuests);
+    if (event.target.validity.valid) {
+      event.target.style.border = '';
+    }
   };
 
   /**
@@ -116,10 +120,19 @@
    * @param {object} event
    */
   var formInvalidHandler = function (event) {
-    fieldsInvalidHandler(event);
+    event.target.style.border = '1px solid red';
+  };
 
-    inputTitle.addEventListener('input', titleValidityHandler);
-    inputPrice.addEventListener('input', priceValidityHandler);
+  /**
+   * Удаляет загруженные изображения
+   */
+  var removeUploadedImages = function () {
+    avatarPreview.src = avatarDefaultSrc;
+
+    var housingPhotos = housingPhotosPreview.querySelectorAll('.form__photo-container img');
+    Array.from(housingPhotos).forEach(function (item) {
+      housingPhotosPreview.removeChild(item);
+    });
   };
 
   /**
@@ -128,6 +141,9 @@
   var successHandler = function () {
     window.util.createPopup();
     noticeForm.reset();
+    inputTitle.removeEventListener('input', titleValidityHandler);
+    inputPrice.removeEventListener('input', priceValidityHandler);
+    removeUploadedImages();
     initializeForm();
   };
 
@@ -149,16 +165,13 @@
     window.backend.save(new FormData(noticeForm), successHandler, errorHandler);
   };
 
+  inputTitle.addEventListener('input', titleValidityHandler);
+  inputPrice.addEventListener('input', priceValidityHandler);
   selectCheckin.addEventListener('change', checkinChangeHandler);
-
   selectCheckout.addEventListener('change', checkoutChangeHandler);
-
   selectType.addEventListener('change', typeChangeHandler);
-
   selectRooms.addEventListener('change', roomsChangeHandler);
-
   noticeForm.addEventListener('invalid', formInvalidHandler, true);
-
   noticeForm.addEventListener('submit', formSubmitHandler);
 
   initializeForm();
