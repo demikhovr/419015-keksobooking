@@ -100,7 +100,7 @@
 
     noticeForm.classList.remove('notice__form--disabled');
     disableElements(noticeFieldsets, false);
-    window.card.closePopup(event);
+    window.card.closePopup();
   };
 
   /**
@@ -249,13 +249,12 @@
 
   /**
    * Функция обновления пинов при фильтрации
-   * @param {array} adsArray
    */
-  var updatePins = function (adsArray) {
-    var newAdsArray = adsArray;
+  var updatePins = function () {
+    var newAdsArray = ads;
 
     removePins();
-    window.card.closePopup(event);
+    window.card.closePopup();
 
     newAdsArray = filterArrayByValue(newAdsArray, roomsFilter, 'rooms');
     newAdsArray = filterArrayByValue(newAdsArray, typeFilter, 'type');
@@ -268,7 +267,7 @@
   };
 
   filtersForm.addEventListener('change', function () {
-    updatePins(ads);
+    window.util.debounce(updatePins);
   });
 
   window.backend.load(successHandler, errorHandler);

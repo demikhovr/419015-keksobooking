@@ -28,7 +28,7 @@
    * @param {object} ad
    */
   var pinElementClickHandler = function (event, ad) {
-    window.card.closePopup(event);
+    window.card.closePopup();
 
     adCard = window.card.insertRenderedCard(ad);
     var adCloseBtn = adCard.querySelector('.popup__close');

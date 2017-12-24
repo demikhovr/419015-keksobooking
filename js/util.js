@@ -7,6 +7,8 @@
     ENTER: 13
   };
 
+  var lastTimeout;
+
   /**
    * Действие при нажатии ESC
    * @param {object} event
@@ -38,6 +40,18 @@
   var getWordEnding = function (number, titles) {
     var cases = [2, 0, 1, 1, 1, 2];
     return titles[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
+  };
+
+  /**
+   * Функция, устраняющая дребезг при частом вызове функции, которую ей передают
+   * @param {function} fun - функция
+   */
+  var debounce = function (fun) {
+    if (lastTimeout) {
+      window.clearTimeout(lastTimeout);
+    }
+    lastTimeout = window.setTimeout(fun,
+        window.const.DEBOUNCE_INTERVAL);
   };
 
   /**
@@ -102,6 +116,7 @@
     getWordEnding: getWordEnding,
     isEscEvent: isEscEvent,
     isEnterEvent: isEnterEvent,
+    debounce: debounce,
     createPopup: createPopup
   };
 

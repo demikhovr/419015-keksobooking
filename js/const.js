@@ -2,6 +2,8 @@
 
 (function () {
 
+  var DEBOUNCE_INTERVAL = 500;
+
   var TIMES = [
     '12:00',
     '13:00',
@@ -71,6 +73,7 @@
   var MIDDLE_PRICE = 50000;
 
   window.const = {
+    DEBOUNCE_INTERVAL: DEBOUNCE_INTERVAL,
     TIMES: TIMES,
     TYPES: TYPES,
     PRICES: PRICES,

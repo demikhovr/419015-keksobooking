@@ -76,16 +76,11 @@
    * Деактивирует метку на карте и закрывает попап с информацией о ней
    * @param {event} event
    */
-  var closePopup = function (event) {
+  var closePopup = function () {
     var activeElement = document.querySelector('.map__pin--active');
-    var mainPin = map.querySelector('.map__pin--main');
+
     if (activeElement) {
-
       activeElement.classList.remove('map__pin--active');
-    }
-
-    if (event.currentTarget === mainPin) {
-      event.currentTarget.classList.add('map__pin--active');
     }
 
     if (adCard) {
@@ -101,7 +96,7 @@
    */
   var onPopupEscPress = function (event) {
     window.util.isEscEvent(event, function () {
-      closePopup(event);
+      closePopup();
     });
   };
 
