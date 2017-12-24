@@ -286,7 +286,11 @@
   window.backend.load(successHandler, errorHandler);
   mainPin.addEventListener('click', mainPinClickHandler);
   mainPin.addEventListener('mousedown', mainPinMouseDownHandler);
-  disableElements(noticeFieldsets, true);
   mainPin.addEventListener('keydown', mainPinEnterPressHandler);
+  disableElements(noticeFieldsets, true);
+
+  window.map = {
+    setDefaultAddress: setDefaultAddress
+  };
 
 }());

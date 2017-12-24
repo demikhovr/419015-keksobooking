@@ -15,7 +15,6 @@
   var avatarDefaultSrc = avatarPreview.src;
   var housingPhotosPreview = document.querySelector('.form__photo-container');
 
-
   /**
    * Синхронизирует значения двух элементов
    * @param {element} element
@@ -145,6 +144,7 @@
     inputPrice.removeEventListener('input', priceValidityHandler);
     removeUploadedImages();
     initializeForm();
+    window.map.setDefaultAddress();
   };
 
   /**

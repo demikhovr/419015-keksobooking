@@ -30,15 +30,13 @@
    * @return {object} validityMessagesObject
    */
   var getCustomTitleValidityMessage = function (minLength, maxLength) {
-    var validityMessagesObject = {
+    return {
       tooShortCondition: minLength,
       tooShortMessage: 'Минимальное допустимое количество символов: ' + minLength + '. Введено сейчас : ' + maxLength,
       tooLongMessage: 'Имя не должно превышать ' + maxLength + ' символов',
       valueMissingMessage: 'Поле обязательно для заполнения!',
       defaultMessage: ''
     };
-
-    return validityMessagesObject;
   };
 
   /**
@@ -48,14 +46,12 @@
    * @return {object} validityMessagesObject
    */
   var getCustomPriceValidityMessage = function (minValue, maxValue) {
-    var validityMessagesObject = {
+    return {
       rangeUnderflowMessage: 'Значение должно быть больше или равно ' + minValue + '.',
       rangeOverflowMessage: 'Значение должно быть меньше или равно ' + maxValue + '.',
       valueMissingMessage: 'Вам необходимо заполнить это поле!',
       defaultMessage: ''
     };
-
-    return validityMessagesObject;
   };
 
   window.validity = {

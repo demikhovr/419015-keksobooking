@@ -72,6 +72,11 @@
   var LOW_PRICE = 10000;
   var MIDDLE_PRICE = 50000;
 
+  var LOAD_URL = 'https://1510.dump.academy/keksobooking/data';
+  var SAVE_URL = 'https://1510.dump.academy/keksobooking';
+  var STATUS_OK = 200;
+  var TIMEOUT = 10000;
+
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png', 'webp'];
 
   window.const = {
@@ -88,6 +93,10 @@
     ADS_AMOUNT: ADS_AMOUNT,
     LOW_PRICE: LOW_PRICE,
     MIDDLE_PRICE: MIDDLE_PRICE,
+    LOAD_URL: LOAD_URL,
+    SAVE_URL: SAVE_URL,
+    STATUS_OK: STATUS_OK,
+    TIMEOUT: TIMEOUT,
     FILE_TYPES: FILE_TYPES
   };
 
