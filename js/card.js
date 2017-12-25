@@ -21,7 +21,7 @@
    * @param {element} templateElement - элемент, куда будем вставлять данные
    * @return {element}
    */
-  var showCard = function (ad, templateElement) {
+  var fillCard = function (ad, templateElement) {
     var cardElementTitle = templateElement.querySelector('h3');
     var cardElementAddress = templateElement.querySelector('p small');
     var cardElementPrice = templateElement.querySelector('.popup__price');
@@ -32,15 +32,16 @@
     var cardElementFeaturesItems = templateElement.querySelectorAll('.feature');
     var cardElementDescription = templateElement.querySelector('ul + p');
     var cardElementAvatar = templateElement.querySelector('.popup__avatar');
+    var cardElementPhotos = templateElement.querySelector('.popup__pictures');
+
+    var endingForRooms = window.util.getWordEnding(ad.offer.rooms, ['комната', 'комнаты', 'комнат']);
+    var endingForGuests = window.util.getWordEnding(ad.offer.guests, ['гостя', 'гостей', 'гостей']);
 
     cardElementTitle.textContent = ad.offer.title;
     cardElementAddress.textContent = ad.offer.address;
     cardElementPrice.textContent = ad.offer.price + ' \u20BD/ночь';
 
     cardElementType.textContent = Types[ad.offer.type];
-
-    var endingForRooms = window.util.getWordEnding(ad.offer.rooms, ['комната', 'комнаты', 'комнат']);
-    var endingForGuests = window.util.getWordEnding(ad.offer.guests, ['гостя', 'гостей', 'гостей']);
 
     cardElementRoomsAndGuests.textContent = ad.offer.rooms + ' ' + endingForRooms + ' для ' + ad.offer.guests + ' ' + endingForGuests;
     cardElementTime.textContent = 'Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout;
@@ -58,6 +59,19 @@
     cardElementDescription.textContent = ad.offer.description;
     cardElementAvatar.src = ad.author.avatar;
 
+    Array.from(cardElementPhotos.children).forEach(function (item) {
+      cardElementPhotos.removeChild(item);
+    });
+
+    ad.offer.photos.forEach(function (item) {
+      var image = document.createElement('img');
+      image.style.width = '40px';
+      image.style.height = 'auto';
+      image.style.marginRight = '5px';
+      image.src = item;
+      cardElementPhotos.appendChild(image);
+    });
+
     return templateElement;
   };
 
@@ -67,7 +81,7 @@
    * @return {node}
    */
   var insertRenderedCard = function (ad) {
-    adCard = showCard(ad, cardElement);
+    adCard = fillCard(ad, cardElement);
     map.insertBefore(adCard, filtersContainer);
     return adCard;
   };

@@ -44,11 +44,7 @@
     var currentValue = selectGuests.value;
 
     Array.from(selectGuests.options).forEach(function (item) {
-      if (item.value !== '0') {
-        item.disabled = item.value > currentValue || item.value === '0';
-      } else {
-        item.disabled = item.value !== currentValue;
-      }
+      item.disabled = (item.value !== window.const.ZERO_VALUE) ? item.value > currentValue : item.value !== currentValue;
     });
   };
 

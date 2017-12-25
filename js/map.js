@@ -22,7 +22,6 @@
   var guestsFilter = filtersForm.querySelector('#housing-guests');
   var featuresFilter = filtersForm.querySelector('#housing-features');
 
-
   /**
    * Устанавливает адрес по умолчанию
    */
@@ -35,21 +34,6 @@
   };
 
   setDefaultAddress();
-
-  /**
-   * Возвращает массив объявлений
-   * @param {object} data - данные
-   * @return {Array}
-   */
-  var getAds = function (data) {
-    var adsArray = [];
-
-    data.forEach(function (item) {
-      adsArray.push(item);
-    });
-
-    return adsArray;
-  };
 
   /**
    * Создаёт DOM фрагмент с пинами
@@ -70,7 +54,7 @@
    * @param {object} data
    */
   var successHandler = function (data) {
-    ads = getAds(data);
+    ads = data.slice();
   };
 
   /**
@@ -203,51 +187,49 @@
    * @return {array}
    */
   var filterArrayByValue = function (array, element, type) {
-    return array.filter(function (item) {
-      return (element.value === 'any') ? item.offer[type] : item.offer[type].toString() === element.value;
+    array = array.filter(function (item) {
+      return item.offer[type].toString() === element.value;
     });
+    return array;
   };
 
   /**
    * Фильтрует массив объектов по цене
    * @param {array} array
-   * @param {element} element
-   * @param {object.type} type
    * @return {array}
    */
-  var filterArrayByPrice = function (array, element, type) {
-    return array.filter(function (item) {
+  var filterArrayByPrice = function (array) {
+    array = array.filter(function (item) {
       var result;
-      switch (element.value) {
+      switch (priceFilter.value) {
         case ('low'):
-          result = item.offer[type] < window.const.LOW_PRICE;
+          result = item.offer.price < window.const.LOW_PRICE;
           break;
         case ('middle'):
-          result = window.const.LOW_PRICE <= item.offer[type] && item.offer[type] < window.const.MIDDLE_PRICE;
+          result = window.const.LOW_PRICE <= item.offer.price && item.offer.price < window.const.MIDDLE_PRICE;
           break;
         case ('high'):
-          result = item.offer[type] > window.const.MIDDLE_PRICE;
+          result = item.offer.price > window.const.MIDDLE_PRICE;
           break;
-        default:
-          result = item.offer[type];
       }
       return result;
     });
+    return array;
   };
 
   /**
    * Фильтрует массив объектов по особенностям
    * @param {array} array
-   * @param {element} elements
-   * @param {object.type} type
    * @return {array}
    */
-  var filterArrayByFeatures = function (array, elements, type) {
-    return array.filter(function (item) {
-      return elements.every(function (feature) {
-        return item.offer[type].indexOf(feature.value) !== -1;
+  var filterArrayByFeatures = function (array) {
+    var activeFeatureItems = Array.from(featuresFilter.querySelectorAll('input[type=checkbox]:checked'));
+    array = array.filter(function (item) {
+      return activeFeatureItems.every(function (feature) {
+        return item.offer.features.indexOf(feature.value) !== -1;
       });
     });
+    return array;
   };
 
   /**
@@ -269,12 +251,19 @@
     removePins();
     window.card.closePopup();
 
-    newAdsArray = filterArrayByValue(newAdsArray, roomsFilter, 'rooms');
-    newAdsArray = filterArrayByValue(newAdsArray, typeFilter, 'type');
-    newAdsArray = filterArrayByValue(newAdsArray, guestsFilter, 'guests');
-    newAdsArray = filterArrayByPrice(newAdsArray, priceFilter, 'price');
-    var activeFeatureItems = Array.from(featuresFilter.querySelectorAll('input[type=checkbox]:checked'));
-    newAdsArray = filterArrayByFeatures(newAdsArray, activeFeatureItems, 'features');
+    if (roomsFilter.value !== window.const.DEFAULT_VALUE) {
+      newAdsArray = filterArrayByValue(newAdsArray, roomsFilter, 'rooms');
+    }
+    if (typeFilter.value !== window.const.DEFAULT_VALUE) {
+      newAdsArray = filterArrayByValue(newAdsArray, typeFilter, 'type');
+    }
+    if (guestsFilter.value !== window.const.DEFAULT_VALUE) {
+      newAdsArray = filterArrayByValue(newAdsArray, guestsFilter, 'guests');
+    }
+    if (priceFilter.value !== window.const.DEFAULT_VALUE) {
+      newAdsArray = filterArrayByPrice(newAdsArray);
+    }
+    newAdsArray = filterArrayByFeatures(newAdsArray);
 
     renderPins(newAdsArray);
   };
