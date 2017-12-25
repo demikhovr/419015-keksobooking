@@ -2,6 +2,8 @@
 
 (function () {
 
+  var CASES = [2, 0, 1, 1, 1, 2];
+
   var DEBOUNCE_INTERVAL = 500;
 
   var TIMES = [
@@ -79,7 +81,12 @@
 
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png', 'webp'];
 
+  var ZERO_VALUE = '0';
+  var DEFAULT_VALUE = 'any';
+
   window.const = {
+    CASES: CASES,
+    DEFAULT_VALUE: DEFAULT_VALUE,
     DEBOUNCE_INTERVAL: DEBOUNCE_INTERVAL,
     TIMES: TIMES,
     TYPES: TYPES,
@@ -97,7 +104,8 @@
     SAVE_URL: SAVE_URL,
     STATUS_OK: STATUS_OK,
     TIMEOUT: TIMEOUT,
-    FILE_TYPES: FILE_TYPES
+    FILE_TYPES: FILE_TYPES,
+    ZERO_VALUE: ZERO_VALUE
   };
 
 }());
