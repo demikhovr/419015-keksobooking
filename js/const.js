@@ -74,8 +74,8 @@
   var LOW_PRICE = 10000;
   var MIDDLE_PRICE = 50000;
 
-  var LOAD_URL = 'https://1510.dump.academy/keksobooking/data';
-  var SAVE_URL = 'https://1510.dump.academy/keksobooking';
+  var LOAD_URL = 'https://js.dump.academy/keksobooking/data';
+  var SAVE_URL = 'https://js.dump.academy/keksobooking';
   var STATUS_OK = 200;
   var TIMEOUT = 10000;
 
